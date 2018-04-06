@@ -74,9 +74,9 @@ CXX_VERSION?= echo "version unknown"
 
 # CRAY compiler
 ifeq ($(CXX), CC)
-  CFLAGS = -homp -O3
-  CLINK = cc
-  CLINKFLAGS = -homp -lm
+  CXXFLAGS = -homp -O3
+  CXXLINK = cc
+  CXXLINKFLAGS = -homp -lm
 endif
 
 # GCC compiler
