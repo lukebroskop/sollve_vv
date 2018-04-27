@@ -22,16 +22,13 @@ int test_target_teams_distribute_depend_in_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom:c[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(in:c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] += a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(in:c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] += 2 * a[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(in:c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] += a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(in:c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] += 2 * a[x] + b[x];
         }
     }
 
@@ -68,16 +65,13 @@ int test_target_teams_distribute_depend_in_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(in: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(in: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -90,16 +84,13 @@ int test_target_teams_distribute_depend_in_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(in: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + a[x];
-            }
+        #pragma omp target teams distribute depend(in: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + a[x];
         }
     }
 
@@ -145,16 +136,13 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -167,16 +155,13 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + a[x];
-            }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + a[x];
         }
     }
 
@@ -188,16 +173,13 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -209,16 +191,13 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + a[x];
-            }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + a[x];
         }
     }
 
@@ -267,16 +246,13 @@ int test_target_teams_distribute_depend_out_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(in: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(in: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -289,16 +265,13 @@ int test_target_teams_distribute_depend_out_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(inout: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(in: c)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + a[x];
-            }
+        #pragma omp target teams distribute depend(inout: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(in: c)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + a[x];
         }
     }
 
@@ -340,16 +313,13 @@ int test_target_teams_distribute_depend_array_section(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: c[0:1024])
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: c[0:1024])
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(out: c[0:1024])
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: c[0:1024])
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -358,6 +328,48 @@ int test_target_teams_distribute_depend_array_section(){
             OMPVV_ERROR("Test of depend clause using array sections did not pass with offloading %s", (isOffloading ? "enabled" : "disabled"));
             return 1;
         }
+    }
+    return 0;
+}
+
+int test_target_teams_distribute_depend_disjoint_section(){
+    int isOffloading = 0;
+    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
+    int a[1024];
+    int b[1024];
+    int c[1024];
+    int all_valid = 1;
+    int race_found = 0;
+
+    for (int x = 0; x < 1024; ++x){
+        a[x] = x;
+        b[x] = 2 * x;
+        c[x] = 0;
+    }
+
+    #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom:c[0:1024])
+    {
+        #pragma omp target teams distribute depend(in:c[0:512])
+        for (int x = 0; x < 1024; ++x){
+            c[x] += a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(in:c[512:512])
+        for (int x = 0; x < 1024; ++x){
+            c[x] += 2 * a[x] + b[x];
+        }
+    }
+
+    for (int x = 0; x < 1024; ++x){
+        if (!(c[x] == 3 * x || c[x] == 6 * x || c[x] == 9 * x)){
+            all_valid = 0;
+        }
+        if (c[x] == 3 * x || c[x] == 6 * x){
+            race_found = 1;
+        }
+    }
+
+    if (!(all_valid == 1 && race_found == 1)){
+        OMPVV_WARNING("Test could not prove asyncronous operations of depend(in) task with other depend(in) task with offloading %s", (isOffloading ? "enabled" : "disabled"));
     }
     return 0;
 }
@@ -385,28 +397,25 @@ int test_target_teams_distribute_depend_list(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024], d[0:1024], e[0:1024]) map(from: f[0:1024], g[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: c)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: d)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = a[x] + b[x] + x;
-            }
-            #pragma omp target teams distribute depend(out: c, d, e)
-            for (int x = 0; x < 1024; ++x){
-                e[x] = c[x] + d[x];
-            }
-            #pragma omp target teams distribute depend(out: e)
-            for (int x = 0; x < 1024; ++x){
-                f[x] = e[x] + a[x];
-            }
-            #pragma omp target teams distribute depend(out: e)
-            for (int x = 0; x < 1024; ++x){
-                g[x] = e[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(out: c)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: d)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = a[x] + b[x] + x;
+        }
+        #pragma omp target teams distribute depend(out: c, d, e)
+        for (int x = 0; x < 1024; ++x){
+            e[x] = c[x] + d[x];
+        }
+        #pragma omp target teams distribute depend(out: e)
+        for (int x = 0; x < 1024; ++x){
+            f[x] = e[x] + a[x];
+        }
+        #pragma omp target teams distribute depend(out: e)
+        for (int x = 0; x < 1024; ++x){
+            g[x] = e[x] + b[x];
         }
     }
 
@@ -435,16 +444,13 @@ int test_target_teams_distribute_depend_unused_data(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024], random_data[0:1]) map(from: d[0:1024])
     {
-        #pragma omp parallel
-        {
-            #pragma omp target teams distribute depend(out: random_data)
-            for (int x = 0; x < 1024; ++x){
-                c[x] = a[x] + b[x];
-            }
-            #pragma omp target teams distribute depend(out: random_data)
-            for (int x = 0; x < 1024; ++x){
-                d[x] = c[x] + b[x];
-            }
+        #pragma omp target teams distribute depend(out: random_data)
+        for (int x = 0; x < 1024; ++x){
+            c[x] = a[x] + b[x];
+        }
+        #pragma omp target teams distribute depend(out: random_data)
+        for (int x = 0; x < 1024; ++x){
+            d[x] = c[x] + b[x];
         }
     }
 
@@ -456,15 +462,7 @@ int test_target_teams_distribute_depend_unused_data(){
     }
     return 0;
 }
-/*
-int test_target_teams_distribute_depend_source(){
-    return 0;
-}
 
-int test_target_teams_distribute_depend_sink(){
-    return 0;
-}
-*/
 
 // Test for OpenMP 4.5 target data with if
 int main() {
@@ -476,10 +474,9 @@ int main() {
   errors += test_target_teams_distribute_depend_out_in();
   errors += test_target_teams_distribute_depend_out_out();
   errors += test_target_teams_distribute_depend_array_section();
+  errors += test_target_teams_distribute_depend_disjoint_section();
   errors += test_target_teams_distribute_depend_list();
   errors += test_target_teams_distribute_depend_unused_data();
-  //errors += test_target_teams_distribute_depend_source();
-  //errors += test_target_teams_distribute_depend_sink();
   if (errors != 0){
       OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));
   }
