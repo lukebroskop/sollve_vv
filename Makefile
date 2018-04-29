@@ -3,10 +3,10 @@ SHELL=/bin/bash -o pipefail
 .DEFAULT_GOAL:=help
 
 ifdef SYSTEM
-	-include sys/$(SYSTEM).def
+	-include sys/systems/$(SYSTEM).def
 endif
 
-include sys/make.def
+include sys/make/make.def
 
 LOG_NOTE?="none"
 
@@ -39,7 +39,7 @@ ifdef ADD_BATCH_SCHED
   BSRUN:= $(BATCH_SCHEDULER)  
 endif
 
-RUN_TEST=$(CURDIR)/sys/run_test.sh
+RUN_TEST=$(CURDIR)/sys/scripts/run_test.sh
 
 
 ##################################################
