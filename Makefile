@@ -20,13 +20,14 @@ endif
 
 RECORD:=
 LOGDIR:= 
+LOGDIRNAME:= logs
 ifdef LOG
-  LOGDIR:= logs
+  LOGDIR:= $(LOGDIRNAME)
   RECORD:= | tee -a $(LOGDIR)/
 endif
 ifdef LOG_ALL
   LOG:=1 # LOG_ALL implies LOG
-  LOGDIR:= logs
+  LOGDIR:= $(LOGDIRNAME)
   RECORD:= 2>&1 | tee -a $(LOGDIR)/
 endif
 
@@ -40,6 +41,8 @@ ifdef ADD_BATCH_SCHED
 endif
 
 RUN_TEST=$(CURDIR)/sys/scripts/run_test.sh
+RESULTS_ANALYZER=$(CURDIR)/sys/scripts/createSummary.py
+RESULTS_JSON_OUTPUT_FILE=results.json
 
 
 ##################################################
@@ -173,6 +176,15 @@ $(BINDIR):
 $(LOGDIR):
 	mkdir $@
 
+$(RESULTS_JSON_OUTPUT_FILE): 
+	@echo "Creating $(RESULTS_JSON_OUTPUT_FILE) file"
+	@echo "Currently we only support run logs that contain compilation and run outputs. Use the 'make all' rule to obtain these"
+	$(RESULTS_ANALYZER) -f json -o $(RESULTS_JSON_OUTPUT_FILE) $(LOGDIRNAME)/*
+
+.PHONY: report_json
+report_json: $(RESULTS_JSON_OUTPUT_FILE)
+	@echo " === REPORT DONE === "
+
 .PHONY: clean
 clean:
 	- rm -r $(BINDIR)
@@ -214,6 +226,9 @@ help:
 	@echo "    Remove all executables from bin/ directory"
 	@echo "  compilers"
 	@echo "    Shows available compiler configuration"
+	@echo "  report_json"
+	@echo "    create a json file containing the results existing in the logs files inside the $(LOGDIRNAME) folder"
+	@echo "    currently we only support runs that contain output for compile and run"
 	@echo ""
 	@echo " === EXAMPLES ==="
 	@echo "  make CC=gcc CXX=g++ all                 ==> compile and run all test cases with GCC"
