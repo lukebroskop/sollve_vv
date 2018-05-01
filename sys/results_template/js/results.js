@@ -80,7 +80,7 @@
       $scope.openResultModal = function (value) {
         var modalInstance = $uibModal.open({
           animation: true,
-          component: 'modalResultado',
+          component: 'modalResults',
           size: 'lg',
           resolve: {
             resultEntry: function() {
@@ -101,10 +101,10 @@
       }
   }]);
 
-  var modalResultadoCtrl = 
+  var modalResultsCtrl = 
 
-  ompvv.component('modalResultado', {
-    templateUrl: 'resultadoModalTemplate.html',
+  ompvv.component('modalResults', {
+    templateUrl: 'html/resultsModalTemplate.html',
     controllerAs: '$ctrl',
     bindings: {
       resolve: '<',
