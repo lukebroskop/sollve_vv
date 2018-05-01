@@ -22,9 +22,33 @@
 
       // Table variables and getting the json file from the server
       $scope.tableContent = [];
-      $http.get("currentResults.json").then(function(data){
-        $scope.tableContent = data.data;
-        $scope.loadingResults = false;
+      // $http.get("currentResults.json").then(function(data){
+      //   $scope.tableContent = data.data;
+      //   $scope.loadingResults = false;
+      //   angular.forEach($scope.tableContent, function(value) {
+      //     if ($scope.filters.compilerOptions.indexOf(value["Compiler name"]) == -1) {
+      //       $scope.filters.compilerOptions.push(value["Compiler name"]);
+      //     }
+      //     if ($scope.filters.platformOptions.indexOf(value["Test system"]) == -1) {
+      //       $scope.filters.platformOptions.push(value["Test system"]);
+      //     }
+      //   });
+      // },
+      // function(err) {
+      //   $scope.loadingResults = false;
+      //   $scope.errorMessage = true;
+      //   $log.log("Error loading results json file " + err);
+      // });
+
+      $scope.loadResults = function(){
+        if (typeof jsonResults == 'undefined'){
+          $scope.loadingResults = false;
+          $scope.errorMessage = true;
+          $log.log("Error loading results json file");
+          $scope.error = "Error loading results json file";
+          return;
+        }
+        $scope.tableContent = jsonResults;
         angular.forEach($scope.tableContent, function(value) {
           if ($scope.filters.compilerOptions.indexOf(value["Compiler name"]) == -1) {
             $scope.filters.compilerOptions.push(value["Compiler name"]);
@@ -33,12 +57,10 @@
             $scope.filters.platformOptions.push(value["Test system"]);
           }
         });
-      },
-      function(err) {
+        
         $scope.loadingResults = false;
-        $scope.errorMessage = true;
-        $log.log("Error loading results json file " + err);
-      });
+      }
+
       // To sort results by column
       $scope.order = {};
       $scope.order.reverseSort = false;
@@ -99,6 +121,8 @@
           $log.info('Modal dismissed');
         });
       }
+      $scope.loadResults();
+
   }]);
 
   var modalResultsCtrl = 
