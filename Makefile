@@ -40,10 +40,12 @@ ifdef ADD_BATCH_SCHED
   BSRUN:= $(BATCH_SCHEDULER)  
 endif
 
+# Test running and results analyzer
 RUN_TEST=$(CURDIR)/sys/scripts/run_test.sh
 RESULTS_ANALYZER=$(CURDIR)/sys/scripts/createSummary.py
 RESULTS_JSON_OUTPUT_FILE=results.json
-
+RESULTS_HTML_OUTPUT_FOLDER=results_report
+RESULTS_HTML_REPORT_TEMPLATE=$(CURDIR)/sys/results_template
 
 ##################################################
 # Source files
@@ -179,10 +181,28 @@ $(LOGDIR):
 $(RESULTS_JSON_OUTPUT_FILE): 
 	@echo "Creating $(RESULTS_JSON_OUTPUT_FILE) file"
 	@echo "Currently we only support run logs that contain compilation and run outputs. Use the 'make all' rule to obtain these"
-	$(RESULTS_ANALYZER) -f json -o $(RESULTS_JSON_OUTPUT_FILE) $(LOGDIRNAME)/*
+	@$(RESULTS_ANALYZER) -f json -o $(RESULTS_JSON_OUTPUT_FILE) $(LOGDIRNAME)/*
 
 .PHONY: report_json
 report_json: $(RESULTS_JSON_OUTPUT_FILE)
+	@echo " === REPORT DONE === "
+
+.PHONY: report_html
+report_html: $(RESULTS_JSON_OUTPUT_FILE)
+	@if [ -d "./$(RESULTS_HTML_OUTPUT_FOLDER)" ]; then \
+    echo "A report exist already. Please move it before creating a new one"; \
+	 else \
+	  echo " === CREATING REPORT === "; \
+		mkdir $(RESULTS_HTML_OUTPUT_FOLDER); \
+		echo " folder $(RESULTS_HTML_OUTPUT_FOLDER) created"; \
+	  cp -r $(RESULTS_HTML_REPORT_TEMPLATE)/* $(RESULTS_HTML_OUTPUT_FOLDER); \
+		echo " template copied"; \
+		mv $(RESULTS_JSON_OUTPUT_FILE) $(RESULTS_HTML_OUTPUT_FOLDER); \
+		sed -i "1s/.*/var jsonResults = \[/g" $(RESULTS_HTML_OUTPUT_FOLDER)/$(RESULTS_JSON_OUTPUT_FILE); \
+		sed -i "$$ s/.*/];/g" $(RESULTS_HTML_OUTPUT_FOLDER)/$(RESULTS_JSON_OUTPUT_FILE); \
+		echo " json file processed"; \
+	fi;
+	
 	@echo " === REPORT DONE === "
 
 .PHONY: clean
