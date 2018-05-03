@@ -22,24 +22,8 @@
 
       // Table variables and getting the json file from the server
       $scope.tableContent = [];
-      // $http.get("currentResults.json").then(function(data){
-      //   $scope.tableContent = data.data;
-      //   $scope.loadingResults = false;
-      //   angular.forEach($scope.tableContent, function(value) {
-      //     if ($scope.filters.compilerOptions.indexOf(value["Compiler name"]) == -1) {
-      //       $scope.filters.compilerOptions.push(value["Compiler name"]);
-      //     }
-      //     if ($scope.filters.platformOptions.indexOf(value["Test system"]) == -1) {
-      //       $scope.filters.platformOptions.push(value["Test system"]);
-      //     }
-      //   });
-      // },
-      // function(err) {
-      //   $scope.loadingResults = false;
-      //   $scope.errorMessage = true;
-      //   $log.log("Error loading results json file " + err);
-      // });
 
+      // Function to load results
       $scope.loadResults = function(){
         if (typeof jsonResults == 'undefined'){
           $scope.loadingResults = false;
