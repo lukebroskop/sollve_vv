@@ -249,6 +249,10 @@ help:
 	@echo "  report_json"
 	@echo "    create a json file containing the results existing in the logs files inside the $(LOGDIRNAME) folder"
 	@echo "    currently we only support runs that contain output for compile and run"
+	@echo "  report_html"
+	@echo "    create an html based results report. This rule takes the json file and a prebuild template and creates"
+	@echo "    the $(RESULTS_HTML_OUTPUT_FOLDER) folder containing the report. This report allows filtering the results"
+	@echo "    by system, compiler, and pass/fail result. It also allows to see the output of each tests"
 	@echo ""
 	@echo " === EXAMPLES ==="
 	@echo "  make CC=gcc CXX=g++ all                 ==> compile and run all test cases with GCC"
@@ -256,6 +260,7 @@ help:
 	@echo "  make CXX=g++ SOURCES_CPP=a.cpp all      ==> compile and run a.cpp with g++"
 	@echo "  make CC=xlc CXX=xlc++ compile           ==> compile all test cases with XL"
 	@echo "  make run                                ==> run all the cases that exist inside bin/"
+	@echo "  make report_html                        ==> Using the logs file created with the LOG option, create a report"
 	@echo "  make TESTS_TO_RUN=bin/myTest run        ==> run myTest "
 	@echo ""
 	
