@@ -112,7 +112,59 @@
   var modalResultsCtrl = 
 
   ompvv.component('modalResults', {
-    templateUrl: 'html/resultsModalTemplate.html',
+    template: `
+    <div class="modal-content">
+    <div class="modal-header">
+        <h3>
+            <span class="label label-info" id="qid">{{$ctrl.resultEntry['Test name']}}</span>
+        </h3>
+        <h4>
+            <span class="label label-primary">Path:</span><span>  {{$ctrl.resultEntry['Test path']}}</span> <br/>
+        </h4>
+        <h4>
+            <span class="label label-primary">Compiler:</span><span>  {{$ctrl.resultEntry['Compiler name']}}</span>
+        </h4>
+    </div>
+    <div class="modal-body">
+        <div class="outputsContainer">
+            <div style="margin-bottom: 15px" >
+                <label class="btn btn-lg btn-block" 
+                ng-click="$ctrl.compilerOutputActive=!$ctrl.compilerOutputActive"
+                ng-class="{'btn-success': $ctrl.testPassed($ctrl.resultEntry['Compiler result']), 'btn-danger': $ctrl.testFailed($ctrl.resultEntry['Compiler result'])}">
+                <i class="glyphicon glyphicon-chevron-right"></i>Compiler result = {{$ctrl.resultEntry['Compiler result']}}
+                </label>
+                <div class="slideDown" ng-show="$ctrl.compilerOutputActive">
+                    <div class="well well-sm">
+                            <strong>Compiler command: </strong>{{$ctrl.resultEntry['Compiler command']}}
+                    </div>
+                    <div class="well well-sm">
+                            <strong>Compilation time range: </strong>{{$ctrl.resultEntry['Compiler starting date']}} - {{$ctrl.resultEntry['Compiler ending date']}}
+                    </div>
+                    <div class="well well-sm resultOutput">
+                            <strong>Compilation output: </strong><br/><span class="outputText" ng-bind-html="$ctrl.color2html($ctrl.resultEntry['Compiler output'])"></span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 15px" >
+                <label class="btn btn-lg btn-primary btn-block" 
+                ng-click="$ctrl.runtimeOutputActive=!$ctrl.runtimeOutputActive"
+                ng-class="{'btn-success': $ctrl.testPassed($ctrl.resultEntry['Runtime result']), 'btn-danger': $ctrl.testFailed($ctrl.resultEntry['Runtime result'])}">
+                        <i class="glyphicon glyphicon-chevron-right"></i>Runtime result = {{$ctrl.resultEntry['Runtime result']}}
+                </label>
+                <div class="slideDown" ng-show="$ctrl.runtimeOutputActive">
+                    <div class="well well-sm">
+                            <strong>Run binary path: </strong>{{$ctrl.resultEntry['Binary path']}}
+                    </div>
+                    <div class="well well-sm resultOutput">
+                            <strong>Run output: </strong><br/><span class="outputText" ng-bind-html="$ctrl.color2html($ctrl.resultEntry['Runtime output'])"></span>
+                    </div>
+                </div>
+            </div>            
+        </div> 
+    </div>
+    <div class="modal-footer text-muted">
+        <span id="answer"></span>
+    `,
     controllerAs: '$ctrl',
     bindings: {
       resolve: '<',
@@ -192,17 +244,5 @@
         return filtered;
       };
   });
-  // Just in case we need it
-//   ompvv.config(function($routeProvider){
-//     $routeProvider.caseInsensitiveMatch = true;    
-//     $routeProvider
-//       .when('/', {
-//         templateUrl: 'views/home.html',
-//         controller:  'indexController'
-//       })
-//       .otherwise({
-//         redirectTo:  '/'
-//       });
-//   })
-
+  
 })(window.angular);
