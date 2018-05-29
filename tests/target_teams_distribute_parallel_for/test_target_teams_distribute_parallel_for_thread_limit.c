@@ -47,8 +47,8 @@ for (nt = 0; nt < 4; nt++) {
     for (i = 0; i < SIZE_N; i++) {
       // If the thread limit is not the one specified or the actual number 
       // of threads is greater than the thread limit, then it is an error
-      OMPVV_TEST_AND_SET(errors, thread_limit[i] != tested_thread_limit[nt]);
-      OMPVV_TEST_AND_SET(errors, num_threads[i] > tested_thread_limit[nt]);
+      OMPVV_TEST_AND_SET(errors, thread_limit[i] > tested_thread_limit[nt]);
+      OMPVV_TEST_AND_SET(errors, num_threads[i] > thread_limit[nt]);
     }
   }
 }
