@@ -14,7 +14,7 @@
 
 #define SIZE_N 1024
 
-int test_target_teams_distribute_parallel_for_threads_limit() {
+int test_target_teams_distribute_parallel_for_thread_limit() {
   OMPVV_INFOMSG("test_target_teams_distribute_parallel_for_threads_limit");
 
   int tested_num_threads[] = {1, 10, 100, 10000};
