@@ -66,15 +66,15 @@ COMP_DEP := $(OBJS_CPP)
 endif
 ifneq "$(SOURCES_F)" ""
 OBJS_F := $(SOURCES_F:.f90=.f90.for.o)
-OBJS_F += $(SOURCES_F:.f95=.f95.for.o)
-OBJS_F += $(SOURCES_F:.f03=.f03.for.o)
-OBJS_F += $(SOURCES_F:.f=.f.for.o)
-OBJS_F += $(SOURCES_F:.for=.for.for.o)
+OBJS_F := $(OBJS_F:.f95=.f95.for.o)
+OBJS_F := $(OBJS_F:.f03=.f03.for.o)
+OBJS_F := $(OBJS_F:.f=.f.for.o)
+OBJS_F := $(OBJS_F:.for=.for.for.o)
 RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f90=.f90.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f95=.f95.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f03=.f03.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f=.f.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.for=.for.for.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f95=.f95.for.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f03=.f03.for.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f=.f.for.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.for=.for.for.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_F)
 endif
@@ -194,6 +194,7 @@ endif
 		|| echo "FAIL" > $(LOGTEMPFILE))
 	-$(call log_section_footer,"COMPILE",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.for.o=.log)))
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
+
 
 ##################################################
 # Running tests rules
@@ -323,4 +324,3 @@ help:
 	@echo "  make TESTS_TO_RUN=bin/myTest run           ==> run myTest "
 	@echo ""
 	
-.DEFAULT_GOAL := help
