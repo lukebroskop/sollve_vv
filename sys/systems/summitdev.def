@@ -53,3 +53,20 @@ ifeq ($(CXX), clang++)
   CXX_VERSION = clang++ -dumpversion
 endif
 
+#---------------------------------------------------------------------------
+# FORTRNA Compilers
+#---------------------------------------------------------------------------
+FCOMPILERS="gfortran, xlf"
+
+# GCC compiler
+ifeq ($(FC), gfortran)
+  F_COMPILER_MODULE = gcc/7.1.1-20170802
+  F_VERSION = gfortran -dumpversion
+endif
+
+# IBM XL compiler
+ifeq ($(FC), xlf)
+  F_COMPILER_MODULE = xl/20180125
+  F_VERSION = xlf -qversion | grep 'Version: .*$$' | sed 's/Version: //g' 
+endif
+
