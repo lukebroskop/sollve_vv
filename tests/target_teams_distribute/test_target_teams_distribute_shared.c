@@ -3,65 +3,63 @@
 #include <stdlib.h>
 #include "ompvv.h"
 
-#define SIZE_THRESHOLD 512
+#define SIZE 1024
 
 // Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
-  int a[1024];
+  int a[SIZE];
   int share = 0;
   int errors = 0;
   int num_teams;
 
-  // a and b array initialization
-  for (int x = 0; x < 1024; ++x) {
+  // a array initialization
+  for (int x = 0; x < SIZE; ++x) {
       a[x] = x;
   }
 
-  #pragma omp target data map(to: a[0:1024]) map(tofrom: share, num_teams)
+  #pragma omp target data map(to: a[0:SIZE]) map(tofrom: share, num_teams)
   {
       #pragma omp target teams distribute shared(share)
-      for (int x = 0; x < 1024; ++x){
+      for (int x = 0; x < SIZE; ++x){
           num_teams = omp_get_num_teams();
           #pragma omp atomic
           share = share + a[x];
       }
   }
 
-  for (int x = 0; x < 1024; ++x){
+  for (int x = 0; x < SIZE; ++x){
       share = share - x;
   }
-  if (share != 0){
-      errors = errors + 1;
-  }
+
+  OMPVV_TEST_AND_SET_VERBOSE(errors, (share != 0));
+  OMPVV_ERROR_IF(errors, "The value of share is = %d", share);
+
   share = -1;
-  #pragma omp target data map(to: a[0:1024]) map(tofrom: share)
+  #pragma omp target data map(to: a[0:SIZE]) map(tofrom: share)
   {
       #pragma omp target teams distribute shared(share)
-      for (int x = 0; x < 1024; ++x){
+      for (int x = 0; x < SIZE; ++x){
           share = a[x];
       }
   }
 
-  if (share < 0 || share > 1023){
-      errors = errors + 1;
-  }
+  OMPVV_TEST_AND_SET_VERBOSE(errors, (share < 0 || share >= SIZE));
+  OMPVV_ERROR_IF(errors, "The value of share is = %d", share); 
 
   share = 5;
 
-  #pragma omp target data map(tofrom: a[0:1024]) map(tofrom: share)
+  #pragma omp target data map(tofrom: a[0:SIZE]) map(tofrom: share)
   {
       #pragma omp target teams distribute shared(share)
-      for (int x = 0; x < 1024; ++x){
+      for (int x = 0; x < SIZE; ++x){
           a[x] = a[x] + share;
       }
   }
 
-  for (int x = 0; x < 1024; ++x){
-      if (a[x] - 5 != x){
-          errors = errors + 1;
-      }
+  for (int x = 0; x < SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] - 5 != x));
   }
 
   if (num_teams == 1){
