@@ -65,16 +65,16 @@ ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_CPP)
 endif
 ifneq "$(SOURCES_F)" ""
-OBJS_F := $(SOURCES_F:.f90=.f90.for.o)
-OBJS_F := $(OBJS_F:.f95=.f95.for.o)
-OBJS_F := $(OBJS_F:.f03=.f03.for.o)
-OBJS_F := $(OBJS_F:.f=.f.for.o)
-OBJS_F := $(OBJS_F:.for=.for.for.o)
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f90=.f90.for.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f95=.f95.for.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f03=.f03.for.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.f=.f.for.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.for=.for.for.run)))
+OBJS_F := $(SOURCES_F:.F90=.F90.FOR.o)
+OBJS_F := $(OBJS_F:.F95=.F95.FOR.o)
+OBJS_F := $(OBJS_F:.F03=.F03.FOR.o)
+OBJS_F := $(OBJS_F:.F=.F.FOR.o)
+OBJS_F := $(OBJS_F:.FOR=.FOR.FOR.o)
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F90=.F90.FOR.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F95=.F95.FOR.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F03=.F03.FOR.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F=.F.FOR.run)))
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.FOR=.FOR.FOR.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_F)
 endif
@@ -82,21 +82,21 @@ endif
 ifeq "$(or $(SOURCES_C),$(or $(SOURCES_CPP), $(SOURCES_F)))" ""
 SOURCES_C := $(shell find $(CURDIR) -name *.c)
 SOURCES_CPP := $(shell find $(CURDIR) -name *.cpp)
-SOURCES_F := $(shell find $(CURDIR) -name *.f90 -o -name *.f95 -o -name *.f03 -o -name *.f -o -name *.for)
+SOURCES_F := $(shell find $(CURDIR) -name *.F90 -o -name *.F95 -o -name *.F03 -o -name *.F -o -name *.FOR)
 OBJS_C := $(SOURCES_C:.c=.c.o)
 OBJS_CPP := $(SOURCES_CPP:.cpp=.cpp.o)
-OBJS_F := $(SOURCES_F:.f90=.f90.for)
-OBJS_F += $(SOURCES_F:.f95=.f95.for)
-OBJS_F += $(SOURCES_F:.f03=.f03.for)
-OBJS_F += $(SOURCES_F:.f=.f.for)
-OBJS_F += $(SOURCES_F:.for=.for.for.o)
+OBJS_F := $(SOURCES_F:.F90=.F90.FOR)
+OBJS_F += $(SOURCES_F:.F95=.F95.FOR)
+OBJS_F += $(SOURCES_F:.F03=.F03.FOR)
+OBJS_F += $(SOURCES_F:.F=.F.FOR)
+OBJS_F += $(SOURCES_F:.FOR=.FOR.FOR.o)
 RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_C:.c=.c.run)))
 RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_CPP:.cpp=.cpp.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f90=.f90.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f95=.f95.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f03=.f03.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.f=.f.for.run)))
-RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.for=.for.for.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F90=.F90.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F95=.F95.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F03=.F03.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F=.F.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.FOR=.FOR.FOR.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_C) $(OBJS_CPP) 
 endif
@@ -186,13 +186,13 @@ endif
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
 
 # fortran files rule
-%.for.o: % $(BINDIR) $(LOGDIR)
+%.FOR.o: % $(BINDIR) $(LOGDIR)
 	@echo -e $(TXTYLW)"\n\n" compile: $< $(TXTNOC)
-	$(call log_section_header,"COMPILE F="${FCOMPILE},$(SYSTEM),$<,$(FC) $(shell $(call loadModules,$(F_COMPILER_MODULE),"shut up") $(F_VERSION)),$(notdir $(@:.for.o=.log)))
-	-$(QUIET)$(call loadModules,$(F_COMPILER_MODULE)) $(FCOMPILE) $(VERBOSE_MODE) $< -o $(BINDIR)/$(notdir $(@:.for.o=.o)) $(if $(LOG),$(RECORD)$(notdir $(@:.for.o=.log))\
+	$(call log_section_header,"COMPILE F="${FCOMPILE},$(SYSTEM),$<,$(FC) $(shell $(call loadModules,$(F_COMPILER_MODULE),"shut up") $(F_VERSION)),$(notdir $(@:.FOR.o=.log)))
+	-$(QUIET)$(call loadModules,$(F_COMPILER_MODULE)) $(FCOMPILE) $(VERBOSE_MODE) $< -o $(BINDIR)/$(notdir $(@:.FOR.o=.o)) $(if $(LOG),$(RECORD)$(notdir $(@:.FOR.o=.log))\
 		&& echo "PASS" > $(LOGTEMPFILE) \
 		|| echo "FAIL" > $(LOGTEMPFILE))
-	-$(call log_section_footer,"COMPILE",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.for.o=.log)))
+	-$(call log_section_footer,"COMPILE",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.FOR.o=.log)))
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
 
 
@@ -219,13 +219,13 @@ endif
 	-$(call log_section_footer,"RUN",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.run=.log)))
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
 # run c app rule
-%.for.run: $(OBJS_F)
-	$(call log_section_header,"RUN",$(SYSTEM),$(@:.for.run=),$(LOG_NOTE),$(notdir $(@:.for.run=.log)))
-	@echo -e $(TXTGRN)"\n\n" running: $@ $(TXTNOC) $(if $(LOG), ${RECORD}$(notdir $(@:.for.run=.log)))
-	-$(call loadModules,$(F_COMPILER_MODULE)) $(BSRUN)$(RUN_TEST) $(@:.for.run=.o) $(VERBOSE) $(if $(LOG),$(RECORD)$(notdir $(@:.for.run=.log))\
+%.FOR.run: $(OBJS_F)
+	$(call log_section_header,"RUN",$(SYSTEM),$(@:.FOR.run=),$(LOG_NOTE),$(notdir $(@:.FOR.run=.log)))
+	@echo -e $(TXTGRN)"\n\n" running: $@ $(TXTNOC) $(if $(LOG), ${RECORD}$(notdir $(@:.FOR.run=.log)))
+	-$(call loadModules,$(F_COMPILER_MODULE)) $(BSRUN)$(RUN_TEST) $(@:.FOR.run=.o) $(VERBOSE) $(if $(LOG),$(RECORD)$(notdir $(@:.FOR.run=.log))\
 		&& echo "PASS" > $(LOGTEMPFILE) \
 		|| echo "FAIL" > $(LOGTEMPFILE))
-	-$(call log_section_footer,"RUN",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.for.run=.log)))
+	-$(call log_section_footer,"RUN",$(SYSTEM),$$(cat $(LOGTEMPFILE)),$(LOG_NOTE),$(notdir $(@:.FOR.run=.log)))
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
 
 # Creates the BINDIR folder
@@ -317,7 +317,7 @@ help:
 	@echo "  make CC=gcc CXX=g++ FC=gfortran all        ==> compile and run all test cases with GCC"
 	@echo "  make CC=gcc SOURCES_C=a.c all              ==> compile and run a.c with gcc"
 	@echo "  make CXX=g++ SOURCES_CPP=a.cpp all         ==> compile and run a.cpp with g++"
-	@echo "  make FC=gfortran SOURCES_F=a.f90 all       ==> compile and run a.cpp with g++"
+	@echo "  make FC=gfortran SOURCES_F=a.F90 all       ==> compile and run a.cpp with g++"
 	@echo "  make CC=xlc CXX=xlc++ FC=gfortran compile  ==> compile all test cases with XL"
 	@echo "  make run                                   ==> run all the cases that exist inside bin/"
 	@echo "  make report_html                           ==> Using the logs file created with the LOG option, create a report"
