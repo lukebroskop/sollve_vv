@@ -116,11 +116,19 @@ F_VERSION?= echo "version unknown"
 ifeq ($(FC), gfortran)
   FOFFLOADING = -foffload="-lm" -lm
   F_NO_OFFLOADING = -foffload=disable
-  FFLAGS = -O3 -fopenmp $(COFFLOADING) 
+  FFLAGS = -O3 -fopenmp $(FOFFLOADING) -ffree-line-length-none
   FLINK = gcc
-  FLINKFLAGS = -O3 -fopenmp $(COFFLOADING)
+  FLINKFLAGS = -O3 -fopenmp $(FOFFLOADING)
 endif
 
+# IBM XLF compiler
+ifeq ($(FC), xlf)
+  FOFFLOADING = -qoffload
+  F_NO_OFFLOADING = 
+  FFLAGS = -O3 -qsmp=omp $(FOFFLOADING) -qmoddir=./ompvv
+  FLINK = xlc
+  FLINKFLAGS = -O3 -qsmp=omp $(FOFFLOADING)
+endif
 #---------------------------------------------------------------------------
 # These macros are passed to the linker 
 #---------------------------------------------------------------------------
