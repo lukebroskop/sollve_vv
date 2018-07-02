@@ -1,7 +1,6 @@
 PROGRAM offloading_success
-!INCLUDE ompvv.f90
-!USE ompvv
 USE omp_lib
+USE iso_fortran_env
 implicit none
   INTEGER :: errors
   LOGICAL :: isHost
