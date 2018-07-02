@@ -65,8 +65,9 @@ ifeq ($(FC), gfortran)
 endif
 
 # IBM XL compiler
-ifeq ($(FC), xlf)
-  F_COMPILER_MODULE = xl/20180125
+ifeq ($(FC), $(filter $(FC), xlf xlf_r))
+  F_COMPILER_MODULE = xl/20180223-beta
+  CUDA_MODULE= cuda/9.0.69
   F_VERSION = xlf -qversion | grep 'Version: .*$$' | sed 's/Version: //g' 
 endif
 

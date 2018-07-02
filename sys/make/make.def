@@ -122,7 +122,7 @@ ifeq ($(FC), gfortran)
 endif
 
 # IBM XLF compiler
-ifeq ($(FC), xlf)
+ifeq ($(FC), $(filter $(FC), xlf xlf_r))
   FOFFLOADING = -qoffload
   F_NO_OFFLOADING = 
   FFLAGS = -O3 -qsmp=omp $(FOFFLOADING) -qmoddir=./ompvv
