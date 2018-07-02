@@ -122,6 +122,8 @@ ifeq ($(FC), gfortran)
 endif
 
 # IBM XLF compiler
+# Summitdev happens to have a wrapper that without it we cannot execute 
+# xlf with OMP 4.5 support. This wrapper is xlf_r
 ifeq ($(FC), $(filter $(FC), xlf xlf_r))
   FOFFLOADING = -qoffload
   F_NO_OFFLOADING = 

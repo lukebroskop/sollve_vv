@@ -65,6 +65,8 @@ ifeq ($(FC), gfortran)
 endif
 
 # IBM XL compiler
+# Summitdev happens to have a wrapper that without it we cannot execute 
+# xlf with OMP 4.5 support. This wrapper is xlf_r
 ifeq ($(FC), $(filter $(FC), xlf xlf_r))
   F_COMPILER_MODULE = xl/20180223-beta
   CUDA_MODULE= cuda/9.0.69
