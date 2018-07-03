@@ -50,7 +50,7 @@
 #define OMPVV_TEST_OFFLOADING call test_offloading(__FILENAME__, __LINE__)
 
 ! Macro for checking if offloading is enabled or not and set a variable with the result
-#define OMPVV_TEST_AND_SET_OFFLOADING(var2set) var2Set = test_and_set_offloading(__FILENAME__, __LINE__)
+#define OMPVV_TEST_AND_SET_OFFLOADING(var2set) var2set = test_and_set_offloading(__FILENAME__, __LINE__)
 
 ! Macro for testing for errors
 #define OMPVV_TEST(condition) call test_error(condition, __FILENAME__, __LINE__)
