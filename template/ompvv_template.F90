@@ -69,9 +69,9 @@
         function test_function() 
           INTEGER:: test_function
           test_function = 1;
-          !omp target map(from: errors)
+          !$omp target map(from: errors)
             test_function = 0;
-          !omp end target
+          !$omp end target
         end function test_function 
 
       end program test
