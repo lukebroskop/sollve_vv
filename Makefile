@@ -124,7 +124,7 @@ compile: MessageDisplay $(COMP_DEP)
 # FOR RUNNING TESTS ONLY
 #################################################
 
-TESTS_TO_RUN ?= $(shell find $(BINDIR) -name '*.o')
+TESTS_TO_RUN ?= $(shell test -d $(BINDIR) && find $(BINDIR) -name '*.o')
 RUN_TESTS = $(TESTS_TO_RUN:.o=.o.run)
 
 .PHONY: run
