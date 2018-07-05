@@ -23,9 +23,9 @@
 #define SIZE_ARRAY 1024
 #define THRESHOLD 512
 
-      program test_target_if
-        use iso_fortran_env
-        use ompvv_lib
+      PROGRAM test_target_if
+        USE iso_fortran_env
+        USE ompvv_lib
         implicit none
        
          LOGICAL :: isOffloading, isHost
@@ -92,5 +92,5 @@
              OMPVV_ERROR(resultInfoMessage)
            END IF
            
-         OMPVV_REPORT_AND_RETURN((errors(0) + errors(1)));
-      END program test_target_if
+         OMPVV_REPORT_AND_RETURN()
+      END PROGRAM test_target_if
