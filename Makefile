@@ -264,7 +264,8 @@ report_html: $(RESULTS_JSON_OUTPUT_FILE)
 
 .PHONY: clean
 clean:
-	- rm -r $(BINDIR)
+	- rm -rf $(BINDIR)
+	- rm -f ./ompvv/ompvv_lib.mod
 
 .PHONY: compilers
 compilers:

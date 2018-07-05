@@ -116,7 +116,7 @@ F_VERSION?= echo "version unknown"
 ifeq ($(FC), gfortran)
   FOFFLOADING = -foffload="-lm" -lm
   F_NO_OFFLOADING = -foffload=disable
-  FFLAGS = -O3 -fopenmp $(FOFFLOADING) -ffree-line-length-none
+  FFLAGS = -O3 -fopenmp $(FOFFLOADING) -ffree-line-length-none -J./ompvv
   FLINK = gcc
   FLINKFLAGS = -O3 -fopenmp $(FOFFLOADING)
 endif
