@@ -24,13 +24,13 @@
         ! checking that the original value was not changed
         IF (.not. firstprivateCheck(1)) PRINT*, "scalar_char not&
         &firstprivatized"
-        IF (scalar_char /= 'a') PRINT*, "The value of scalar_value &
+        IF (scalar_char /= 'a') PRINT*, "The value of scalar_char &
         &changed and it should not have"
 #ifdef DOUBLE_COMPLEX
-        IF (.not. firstprivateCheck(2)) PRINT*, "scalar_char not &
+        IF (.not. firstprivateCheck(2)) PRINT*, "scalar_doublcmplx not &
         &firstprivatized"
         IF (scalar_double_complex /= (5e+9, 5e+9)) PRINT*, "The value&
-        & of scalar_value changed and it should not have"
+        & of scalar_double_complex changed and it should not have"
 #endif
 
         !$omp target defaultmap(tofrom: scalar)
@@ -40,11 +40,11 @@
 #endif
         !$omp end target 
 
-        IF (scalar_char /= 'b') PRINT*, "The value of scalar_value &
-        &changed and it should not have"
+        IF (scalar_char /= 'b') PRINT*, "The value of scalar_char &
+        &did not changed and it should have"
 #ifdef DOUBLE_COMPLEX
         IF (scalar_double_complex /= (5e+9, 5e+9)) PRINT*, "The value &
-        & of scalar_value changed and it should not have"
+        & of scalar_double_complex did not changed and it should have"
 #endif
 
       END PROGRAM
