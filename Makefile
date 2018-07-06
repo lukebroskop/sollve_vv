@@ -186,7 +186,7 @@ endif
 	-@$(if $(LOG), rm $(LOGTEMPFILE))
 
 # fortran files rule
-%.FOR.o: % $(BINDIR) $(LOGDIR)
+%.FOR.o: % $(BINDIR) $(LOGDIR) clear_fortran_mod
 	@echo -e $(TXTYLW)"\n\n" compile: $< $(TXTNOC)
 	$(call log_section_header,"COMPILE F="${FCOMPILE},$(SYSTEM),$<,$(FC) $(shell $(call loadModules,$(F_COMPILER_MODULE),"shut up") $(F_VERSION)),$(notdir $(@:.FOR.o=.log)))
 	-$(QUIET)$(call loadModules,$(F_COMPILER_MODULE)) $(FCOMPILE) $(VERBOSE_MODE) $< -o $(BINDIR)/$(notdir $(@:.FOR.o=.o)) $(if $(LOG),$(RECORD)$(notdir $(@:.FOR.o=.log))\
@@ -263,8 +263,11 @@ report_html: $(RESULTS_JSON_OUTPUT_FILE)
 	@echo " === REPORT DONE === "
 
 .PHONY: clean
-clean:
+clean: clear_fortran_mod
 	- rm -rf $(BINDIR)
+
+.PHONY: clear_fortran_mod
+clear_fortran_mod::
 	- rm -f ./ompvv/ompvv_lib.mod
 
 .PHONY: compilers
