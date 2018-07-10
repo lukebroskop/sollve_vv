@@ -59,7 +59,7 @@ int main() {
       errors += 1;
   }
   if (privatized_array[1] != ((a[1023] + b[1023]) * c[1023])){
-      errors += 1;s
+      errors += 1;
   }
 
   OMPVV_REPORT_AND_RETURN(errors);
