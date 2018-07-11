@@ -63,7 +63,7 @@
 
         errors = test_function()
 
-        OMPVV_REPORT_AND_RETURN(errors)
+        OMPVV_REPORT_AND_RETURN()
 
       contains
         function test_function() 
