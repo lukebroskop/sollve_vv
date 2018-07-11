@@ -43,7 +43,7 @@ int main() {
       }
   }
 
-  OMPVV_TEST_AND_SET_VERBOSE(errors, (share < 0 || share >= 1024));
+  OMPVV_TEST_AND_SET_VERBOSE(errors, (share < -1 || share >= 1024));
 
   share = 5;
 
@@ -57,6 +57,9 @@ int main() {
 
   for (int x = 0; x < 1024; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] - 5 != x));
+      if (a[x] - 5 != x){
+         break;
+      }
   }
 
   if (num_teams == 1){

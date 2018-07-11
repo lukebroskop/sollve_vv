@@ -40,6 +40,9 @@ int main() {
 
   for (int x = 0; x < 1024; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, (d[x] != (1 + x)*2*x));
+      if (d[x] != (1 + x)*2*x){
+          break;
+      }
   }
 
   #pragma omp target data map(to: b[0:1024]) map(tofrom: share)
@@ -54,9 +57,7 @@ int main() {
   for (int x = 0; x < 1024; ++x){
       share = share - x;
   }
-  if (share != 0){
-      OMPVV_TEST_AND_SET_VERBOSE(errors, (share != 0));
-  }
+  OMPVV_TEST_AND_SET_VERBOSE(errors, (share != 0));
 
   if (!errors) {
     OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));

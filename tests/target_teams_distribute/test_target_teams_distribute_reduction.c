@@ -7,8 +7,6 @@
 
 
 int test_add_general(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int total = 0;
@@ -34,9 +32,7 @@ int test_add_general(){
         host_total += a[x] + b[x];
     }
 
-    if (host_total != total){
-        errors = errors = 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, host_total != total);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -45,8 +41,6 @@ int test_add_general(){
 }
 
 int test_and(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     char a[1024];
     char result;
     char host_result;
@@ -80,8 +74,9 @@ int test_and(){
             host_result = host_result && a[x];
         }
 
+        OMPVV_TEST_AND_SET_VERBOSE(errors, host_result != result);
         if (host_result != result){
-            errors += 1;
+            break;
         }
     }
 
@@ -92,8 +87,6 @@ int test_and(){
 }
 
 int test_bitand(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     unsigned int a[1024];
     double false_margin = pow(exp(1), log(.5)/1024);
     int errors = 0;
@@ -126,9 +119,7 @@ int test_bitand(){
         host_b = host_b & a[x];
     }
 
-    if (b != host_b){
-        errors = errors + 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, b != host_b);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -137,8 +128,6 @@ int test_bitand(){
 }
 
 int test_bitor(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     double false_margin = pow(exp(1), log(.5)/1024);
     int errors = 0;
@@ -169,9 +158,7 @@ int test_bitor(){
         host_b = host_b | a[x];
     }
 
-    if (b != host_b){
-        errors = 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, b != host_b);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -180,8 +167,6 @@ int test_bitor(){
 }
 
 int test_bitxor(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     unsigned int a[1024];
     int errors = 0;
     int num_teams = 0;
@@ -207,9 +192,7 @@ int test_bitxor(){
         host_b = (host_b ^ a[x]);
     }
 
-    if (host_b != b){
-        errors = 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, b != host_b);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -218,8 +201,6 @@ int test_bitxor(){
 }
 
 int test_max(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int errors = 0;
@@ -247,9 +228,7 @@ int test_max(){
         host_max = max(host_max, a[x] + b[x]);
     }
 
-    if (result != host_max){
-        errors += 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, result != host_max);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -258,8 +237,6 @@ int test_max(){
 }
 
 int test_min(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int errors = 0;
@@ -287,9 +264,7 @@ int test_min(){
         host_min = min(host_min, a[x] + b[x]);
     }
 
-    if (host_min != result){
-        errors = errors + 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, host_min != result);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");
@@ -298,8 +273,6 @@ int test_min(){
 }
 
 int test_multiply(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int errors = 0;
     int num_teams = 0;
@@ -322,8 +295,9 @@ int test_multiply(){
             for (int y = 0; y < 16; ++y){
                 host_result *= a[x];
             }
+            OMPVV_TEST_AND_SET_VERBOSE(errors, host_result != result);
             if (host_result != result){
-                errors = errors + 1;
+                break;
             }
         }
     }
@@ -336,8 +310,6 @@ int test_multiply(){
 }
 
 int test_or(){
-    int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     char a[1024];
     double false_margin = pow(exp(1), log(.5)/1024);
     int errors = 0;
@@ -368,9 +340,7 @@ int test_or(){
         host_result = host_result || a[x];
     }
 
-    if (host_result != result){
-        errors += 1;
-    }
+    OMPVV_TEST_AND_SET_VERBOSE(errors, host_result != result);
 
     if (num_teams == 1){
         OMPVV_WARNING("Test operated with one team.  Testing of reduction clause cannot be done.");

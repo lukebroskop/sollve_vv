@@ -44,7 +44,10 @@ int main() {
   for (int dev = 0; dev < num_devices; ++dev){
       #pragma omp target exit data map(from: a[0:ARRAY_SIZE], num_teams[dev]) map(delete: b[0:ARRAY_SIZE]) device(dev)
       for (int x = 0; x < ARRAY_SIZE; ++x){
-          OMPVV_TEST_AND_SET(errors[dev], a[x] != 1 + dev + b[x]);
+          OMPVV_TEST_AND_SET_VERBOSE(errors[dev], a[x] != 1 + dev + b[x]);
+          if (a[x] != 1 + dev + b[x]){
+              break;
+          }
       }
   }
 

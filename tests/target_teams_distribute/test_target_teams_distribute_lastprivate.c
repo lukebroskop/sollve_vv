@@ -32,13 +32,12 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, c[x] - a[x] != 0);
       if (c[x] - a[x] != 0){
-          errors += 1;
+          break;
       }
   }
-  if (privatized != a[1023] - b[1023]){
-      errors += 1;
-  }
+  OMPVV_TEST_AND_SET_VERBOSE(errors, privatized != a[1023] - b[1023]);
 
   for (int x = 0; x < 1024; ++x){
       a[x] = 1;
@@ -55,12 +54,7 @@ int main() {
       }
   }
 
-  if (privatized_array[0] != (a[1023] + b[1023] + c[1023])){
-      errors += 1;
-  }
-  if (privatized_array[1] != ((a[1023] + b[1023]) * c[1023])){
-      errors += 1;
-  }
-
+  OMPVV_TEST_AND_SET_VERBOSE(errors, privatized_array[0] != (a[1023] + b[1023] + c[1023]));
+  OMPVV_TEST_AND_SET_VERBOSE(errors, privatized_array[1] != ((a[1023] + b[1023]) * c[1023]));
   OMPVV_REPORT_AND_RETURN(errors);
 }

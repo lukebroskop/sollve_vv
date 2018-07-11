@@ -51,20 +51,25 @@ int main() {
       }
   }
 
-
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, (c[x] != 3 * x));
-      OMPVV_TEST_AND_SET(errors, (f[x] != 7 * x));
-      OMPVV_TEST_AND_SET(errors, (g[x] != 10 * x));
+      OMPVV_TEST_AND_SET_VERBOSE(errors, c[x] != 3 * x);
+      if (c[x] != 3 * x){
+          break;
+      }
   }
 
+  for (int x = 0; x < 1024; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, f[x] != 7 * x);
+      if (f[x] != 7 * x){
+          break;
+      }
+  }
 
-  if (!errors) {
-    OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));
-  } else if (!is_host) {
-    OMPVV_ERROR("Test failed on device with offloading %s.", (isOffloading ? "enabled" : "disabled"));
-  } else if (is_host) {
-    OMPVV_ERROR("Test failed on host with offloading %s.", (isOffloading ? "enabled" : "disabled"));
+  for (int x = 0; x < 1024; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, g[x] != 10 * x);
+      if (g[x] != 10 * x){
+          break;
+      }
   }
 
   OMPVV_REPORT_AND_RETURN(errors);

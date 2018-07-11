@@ -58,11 +58,44 @@ int test_defaultmap_on() {
 
   for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, char_array[x] != 1);
+      if (char_array[x] != 1){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, short_array[x] != 2);
+      if (short_array[x] != 2){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, int_array[x] != 3);
+      if (int_array[x] != 3){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(float_array[x] - .4) > .0000001);
+      if (fabs(float_array[x] - .4) > .0000000001){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array[x] - .5) > .0000000001);
+      if (fabs(double_array[x] - .5) > .0000000001){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array[x] != VAL2);
+      if (enum_array[x] != VAL2){
+          break;
+      }
   }
 
   return errors;
@@ -127,7 +160,7 @@ int test_defaultmap_off() {
         enum_array_a[x] = x%4 + 1;
         enum_array_b[x] = VAL1;
 
-        // To check if execution happened in the host        
+        // To check if execution happened in the host
         isHost[x] = 0;
     }
 
@@ -174,11 +207,44 @@ int test_defaultmap_off() {
 
     for (int x = 0; x < ARRAY_SIZE; ++x){
         OMPVV_TEST_AND_SET_VERBOSE(errors, char_array_b[x] != char_array_a[x]);
+        if (char_array_b[x] != char_array_a[x]){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
         OMPVV_TEST_AND_SET_VERBOSE(errors, short_array_b[x] != short_array_a[x]);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, int_array_b[x] != int_array_b[x]);
+        if (short_array_b[x] != short_array_a[x]){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, int_array_b[x] != int_array_a[x]);
+        if (int_array_b[x] != int_array_a[x]){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
         OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(float_array_b[x] - (((int) float_array_a[x]) * .7)) > .00001);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array_b[x] - (((int) double_array_a[x]) *.9)) > .000000001);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array_b[x] != enum_array_a[x]);
+        if (fabs(float_array_b[x] - (((int) float_array_a[x]) * .7)) > .00001){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array_b[x] - (((int) double_array_a[x]) * .9)) > .000000001);
+        if (fabs(double_array_b[x] - (((int) double_array_a[x]) * .9)) > .000000001){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(enum_array_b[x] != enum_array_a[x]));
+        if (enum_array_b[x] != enum_array_a[x]){
+            break;
+        }
     }
 
     scalar_char = 26;
@@ -225,23 +291,56 @@ int test_defaultmap_off() {
 
     for (int x = 0; x < ARRAY_SIZE; ++x){
         OMPVV_TEST_AND_SET_VERBOSE(errors, char_array_a[x] != scalar_char_copy);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, short_array_a[x] != scalar_short_copy);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, int_array_a[x] != scalar_int_copy);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(float_array_a[x] - scalar_float_copy) > .00001);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array_a[x] - scalar_double_copy) > .000000001);
-        OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array_a[x] != scalar_enum_copy);
-
-        // If not shared memory, test if the scalars were not modified
-        if (devtest == 1 && !isHost[x]) {
-            OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_char != scalar_char_copy);
-            OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_short != scalar_short_copy);
-            OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_int != scalar_int_copy);
-            OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_float - scalar_float_copy) > .00001);
-            OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_double - scalar_double_copy) > .000000001);
-            OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_enum != scalar_enum_copy);
+        if (char_array_a[x] != scalar_char_copy){
+            break;
         }
     }
-    
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, short_array_a[x] != scalar_short_copy);
+        if (short_array_a[x] != scalar_short_copy){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, int_array_a[x] != scalar_int_copy);
+        if (int_array_a[x] != scalar_int_copy){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(float_array_a[x] - scalar_float_copy) > .00001);
+        if (fabs(float_array_a[x] - scalar_float_copy) > .00001){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array_a[x] - scalar_double_copy) > .000000001);
+        if (fabs(double_array_a[x] - scalar_double_copy) > .000000001){
+            break;
+        }
+    }
+
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array_a[x] != scalar_enum_copy);
+        if (enum_array_a[x] != scalar_enum_copy){
+            break;
+        }
+    }
+
+    // If not shared memory, test if the scalars were not modified
+    if (devtest == 1 && !isHost[x]) {
+        OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_char != scalar_char_copy);
+        OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_short != scalar_short_copy);
+        OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_int != scalar_int_copy);
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_float - scalar_float_copy) > .00001);
+        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_double - scalar_double_copy) > .000000001);
+        OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_enum != scalar_enum_copy);
+    }
+
 
     return errors;
 }
