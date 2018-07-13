@@ -34,6 +34,7 @@ fi
 
 app=$1
 output=`timeout 60s $app 2>&1`
+output=$(printf "$output" | uniq)
 status=$?
 
 if [ -z $2 ]; then
