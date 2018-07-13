@@ -14,6 +14,7 @@
       PROGRAM test_target_firstprivate
         USE iso_fortran_env
         USE ompvv_lib
+        USE omp_lib
         implicit none
         
         OMPVV_TEST_OFFLOADING
@@ -26,15 +27,18 @@
           INTEGER FUNCTION test_target_firstprivate_clause()
             INTEGER :: compute_array(N,NUM_THREADS_TEST)
             INTEGER :: p_val
+            INTEGER :: actualThreadCnt = 0
+            CHARACTER(len=400) :: messageHelper
 
             OMPVV_INFOMSG("Testing firstprivate clause with target")
             
             compute_array(:,:) = 0
-          
+
             call omp_set_num_threads(NUM_THREADS_TEST)
             !$omp parallel private(p_val)
               ! each p_val is private to a thread
               p_val = omp_get_thread_num() + 1
+              actualThreadCnt = omp_get_num_threads()
               !$omp target map(tofrom:compute_array(:, p_val)) firstprivate(p_val)
                 ! the p_val should be private and initialized to the p_val
                 ! before the target region
@@ -47,7 +51,11 @@
               compute_array(:, p_val) = compute_array(:, p_val) + 1
             !$omp end parallel 
 
-            OMPVV_TEST_VERBOSE(ANY(compute_array /= 101))
+            WRITE(messageHelper, *) "The number of threads in the &
+            & host is 1. Test is inconclusive"
+            OMPVV_WARNING_IF(actualThreadCnt == 1, messageHelper)
+
+            OMPVV_TEST_VERBOSE(ANY(compute_array(:,1:actualThreadCnt) /= 101))
 
             OMPVV_GET_ERRORS(test_target_firstprivate_clause)
           END FUNCTION test_target_firstprivate_clause
