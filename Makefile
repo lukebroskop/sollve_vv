@@ -51,20 +51,22 @@ RESULTS_HTML_REPORT_TEMPLATE=$(CURDIR)/sys/results_template
 # Source files
 #################################################
 
+ifneq "$(or $(SOURCES_C),$(or $(SOURCES_CPP),$(SOURCES_F)))" ""
+$(error The SOURCES_C SOURCES_CPP and SOURCES_F flags where depreciated. Use SOURCES instead)
+endif
 
-ifneq "$(SOURCES_C)" ""
+ifneq "$(SOURCES)" ""
+SOURCES_C := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "c$$")
 OBJS_C := $(SOURCES_C:.c=.c.o)
 RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_C:.c=.c.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_C)
-endif
-ifneq "$(SOURCES_CPP)" ""
+SOURCES_CPP := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "cpp$$")
 OBJS_CPP := $(SOURCES_CPP:.cpp=.cpp.o)
 RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_CPP:.cpp=.cpp.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_CPP)
-endif
-ifneq "$(SOURCES_F)" ""
+SOURCES_F := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "\(F90\|F95\|F03\|F\|FOR\)$$")
 OBJS_F := $(SOURCES_F:.F90=.F90.FOR.o)
 OBJS_F := $(OBJS_F:.F95=.F95.FOR.o)
 OBJS_F := $(OBJS_F:.F03=.F03.FOR.o)
@@ -77,9 +79,10 @@ RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F=.F.FOR.run)))
 RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.FOR=.FOR.FOR.run)))
 ALL_DEP := $(RUN_DEP)
 COMP_DEP := $(OBJS_F)
+$(info SOURCES = $(notdir $(SOURCES_C) $(SOURCES_CPP) $(SOURCES_F)))
 endif
 
-ifeq "$(or $(SOURCES_C),$(or $(SOURCES_CPP), $(SOURCES_F)))" ""
+ifeq "$(SOURCES)" ""
 SOURCES_C := $(shell find $(CURDIR) -name *.c)
 SOURCES_CPP := $(shell find $(CURDIR) -name *.cpp)
 SOURCES_F := $(shell find $(CURDIR) -name *.F90 -o -name *.F95 -o -name *.F03 -o -name *.F -o -name *.FOR)
@@ -293,18 +296,16 @@ help:
 	@echo "  MODULE_LOAD=1             Before compiling or running, module load is called"
 	@echo "  ADD_BATCH_SCHED=1         Add the jsrun command before the execution of the running script to send it to a compute node"
 	@echo "  NO_OFFLOADING=1           Turn off offloading"
-	@echo "  SOURCES_C=file.c          Specify the C file(s) that you want to apply the rule to. Cannot be combined with SOURCES_CPP and SOURCES_F"
-	@echo "  SOURCES_CPP=file.cxx      Specify the CPP file(s) that you want to apply the rule to. Cannot be combined with SOURCES_C and SOURCES_F"
-	@echo "  SOURCES_F=file.f          Specify the FORTRAN file(s) that you want to apply the rule to. Cannot be combined SOURCES_C and SOURCES_CPP"
+	@echo "  SOURCES=file or exp       Specify the source file(s) that you want to apply the rule to. You can use wildchars to select a subset of tests"
 	@echo "  TESTS_TO_RUN=bin/file.o   Specify the binaries to run"
 	@echo ""
 	@echo " === RULES ==="
 	@echo "  all"
-	@echo "    Build and run SOURCES_CPP or SOURCES_C. If none is specified build and run all the OpenMP test files"
+	@echo "    Build and run SOURCES. If none is specified build and run all the OpenMP test files"
 	@echo "  run"
 	@echo "    run either TESTS_TO_RUN list, or all the OpenMP tests that are available within bin/ directory"
 	@echo "  compile"
-	@echo "    Compile the specific SOURCES_CPP or SOURCES_C files. If none is specified compile all the OpenMP test files"
+	@echo "    Compile the specific SOURCES files. If none is specified compile all the OpenMP test files"
 	@echo "  clean"
 	@echo "    Remove all executables from bin/ directory"
 	@echo "  compilers"
@@ -318,13 +319,15 @@ help:
 	@echo "    by system, compiler, and pass/fail result. It also allows to see the output of each tests"
 	@echo ""
 	@echo " === EXAMPLES ==="
-	@echo "  make CC=gcc CXX=g++ FC=gfortran all        ==> compile and run all test cases with GCC"
-	@echo "  make CC=gcc SOURCES_C=a.c all              ==> compile and run a.c with gcc"
-	@echo "  make CXX=g++ SOURCES_CPP=a.cpp all         ==> compile and run a.cpp with g++"
-	@echo "  make FC=gfortran SOURCES_F=a.F90 all       ==> compile and run a.cpp with g++"
-	@echo "  make CC=xlc CXX=xlc++ FC=gfortran compile  ==> compile all test cases with XL"
-	@echo "  make run                                   ==> run all the cases that exist inside bin/"
-	@echo "  make report_html                           ==> Using the logs file created with the LOG option, create a report"
-	@echo "  make TESTS_TO_RUN=bin/myTest run           ==> run myTest "
+	@echo "  make CC=gcc CXX=g++ FC=gfortran all         ==> compile and run all test cases with GCC"
+	@echo "  make CC=gcc SOURCES=a.c all                 ==> compile and run a.c with gcc"
+	@echo "  make CXX=g++ SOURCES=a.cpp all              ==> compile and run a.cpp with g++"
+	@echo "  make CXX=g++ SOURCES=tests/target/* all     ==> compile and run all tests/target tests"
+	@echo "  make CXX=g++ SOURCES=tests/target/*.F90 all ==> compile and run all fortran tests in tests/target"
+	@echo "  make FC=gfortran SOURCES=a.F90 all          ==> compile and run a.cpp with g++"
+	@echo "  make CC=xlc CXX=xlc++ FC=gfortran compile   ==> compile all test cases with XL"
+	@echo "  make run                                    ==> run all the cases that exist inside bin/"
+	@echo "  make report_html                            ==> Using the logs file created with the LOG option, create a report"
+	@echo "  make TESTS_TO_RUN=bin/myTest run            ==> run myTest "
 	@echo ""
 	
