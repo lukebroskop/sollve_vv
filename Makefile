@@ -56,30 +56,31 @@ $(error The SOURCES_C SOURCES_CPP and SOURCES_F flags where depreciated. Use SOU
 endif
 
 ifneq "$(SOURCES)" ""
+# Obtain all the possible source files
 SOURCES_C := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "c$$")
-OBJS_C := $(SOURCES_C:.c=.c.o)
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_C:.c=.c.run)))
-ALL_DEP := $(RUN_DEP)
-COMP_DEP := $(OBJS_C)
 SOURCES_CPP := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "cpp$$")
-OBJS_CPP := $(SOURCES_CPP:.cpp=.cpp.o)
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_CPP:.cpp=.cpp.run)))
-ALL_DEP := $(RUN_DEP)
-COMP_DEP := $(OBJS_CPP)
 SOURCES_F := $(shell find $(CURDIR) -path "*$(SOURCES)" | grep "\(F90\|F95\|F03\|F\|FOR\)$$")
+$(info SOURCES = $(notdir $(SOURCES_C) $(SOURCES_CPP) $(SOURCES_F)))
+
+# Obtain all the possible binary files formed from the source files
+OBJS_C := $(SOURCES_C:.c=.c.o)
+OBJS_CPP := $(SOURCES_CPP:.cpp=.cpp.o)
 OBJS_F := $(SOURCES_F:.F90=.F90.FOR.o)
 OBJS_F := $(OBJS_F:.F95=.F95.FOR.o)
 OBJS_F := $(OBJS_F:.F03=.F03.FOR.o)
 OBJS_F := $(OBJS_F:.F=.F.FOR.o)
 OBJS_F := $(OBJS_F:.FOR=.FOR.FOR.o)
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F90=.F90.FOR.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F95=.F95.FOR.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F03=.F03.FOR.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F=.F.FOR.run)))
-RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.FOR=.FOR.FOR.run)))
+
+# Obtain the list of dependencies
+RUN_DEP := $(addprefix $(BINDIR)/,$(notdir $(SOURCES_C:.c=.c.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_CPP:.cpp=.cpp.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(SOURCES_F:.F90=.F90.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F95=.F95.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F03=.F03.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.F=.F.FOR.run)))
+RUN_DEP += $(addprefix $(BINDIR)/,$(notdir $(RUN_DEP:.FOR=.FOR.FOR.run)))
 ALL_DEP := $(RUN_DEP)
-COMP_DEP := $(OBJS_F)
-$(info SOURCES = $(notdir $(SOURCES_C) $(SOURCES_CPP) $(SOURCES_F)))
+COMP_DEP := $(OBJS_C) $(OBJS_CPP) $(OBJS_F)
 endif
 
 ifeq "$(SOURCES)" ""
