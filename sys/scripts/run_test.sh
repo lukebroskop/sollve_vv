@@ -3,6 +3,8 @@
 #  USAGE: ./run_test.sh <APP> <LOG>.
 #    <LOG>: if present then it will  output of the tests in LOG.
 
+OMP_THREAD_LIMIT=160
+
 function report ()
 {
   # $1= app, $2=status, $3=output
@@ -34,8 +36,8 @@ fi
 
 app=$1
 output=`timeout 60s $app 2>&1`
-output=$(printf "$output" | uniq)
 status=$?
+output=$(printf "$output" | uniq)
 
 if [ -z $2 ]; then
   report $(basename $app) $status
