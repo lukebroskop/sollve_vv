@@ -26,6 +26,7 @@
       PROGRAM test_target_if
         USE iso_fortran_env
         USE ompvv_lib
+        USE omp_lib
         implicit none
        
          LOGICAL :: isOffloading, isHost
@@ -33,18 +34,20 @@
          INTEGER :: b(1:SIZE_ARRAY)
          INTEGER :: c(1:SIZE_ARRAY)
          INTEGER :: alpha, errors(2), i, j, s
-         CHARACTER(len=300) :: resultInfoMessage
+         CHARACTER(len=300) :: infoMessage
          
          OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
 
          ! warning if offloading is off
          IF (.NOT. isOffloading) THEN 
-           OMPVV_WARNING("Offloading is off. Not possible to test if clause")
+           WRITE(infoMessage, *) "Offloading is off. Not possible&
+           & to test if clause"
+           OMPVV_WARNING(infoMessage)
          END IF
 
          ! a and b array initialization
          a(:) = 1
-         b(:) = (/ (i - 1, i = 1, SIZE_ARRAY) /)
+         b(:) = (/ (i - 1, i = 1, SIZE_ARRAY) /) 
        
          ! check multiple sizes. 
          DO s = 256, 1024, 256
@@ -58,8 +61,8 @@
                IF (isHost) alpha = 0
                ! c(j) is zero if executed in the host
                ! c(j) is 1+j if executed on the device
-               c(:) = (/ (alpha*(a(j) + b(j)), j = 1, SIZE_ARRAY) /)
-               !$omp end target 
+               c(1:s) = (/ (alpha*(a(j) + b(j)), j = 1, s) /)
+             !$omp end target 
        
            ! checking results 
            DO i = 1, s
@@ -77,19 +80,22 @@
            END DO ! i
          END DO ! s
       
-         resultInfoMessage = MERGE("enabled ", "disabled", isOffloading)
+         infoMessage = MERGE("enabled ", "disabled", isOffloading)
            IF ( errors(1) == 0 .AND. errors(2) == 0) THEN 
-             resultInfoMessage = "Test passed with offloading "//resultInfoMessage
-             OMPVV_INFOMSG(resultInfoMessage)
+             infoMessage = "Test passed with offloading "//infoMessage
+             OMPVV_INFOMSG(infoMessage)
            ELSE IF (errors(1) == 0 .AND. errors(2) /= 0) THEN
-             resultInfoMessage = "Test failed on the host with offloading "//resultInfoMessage
-             OMPVV_ERROR(resultInfoMessage)
+             infoMessage = "Test failed on the host &
+             & with offloading "//infoMessage
+             OMPVV_ERROR(infoMessage)
            ELSE IF (errors(1) /= 0 .AND. errors(2) == 0) THEN
-             resultInfoMessage = "Test failed on the device with offloading "//resultInfoMessage
-             OMPVV_ERROR(resultInfoMessage)
+             infoMessage = "Test failed on the device &
+             & with offloading "//infoMessage
+             OMPVV_ERROR(infoMessage)
            ELSE IF (errors(1) /= 0 .AND. errors(2) /=0) THEN
-             resultInfoMessage = "Test failed on both host and device with offloading "//resultInfoMessage
-             OMPVV_ERROR(resultInfoMessage)
+             infoMessage = "Test failed on both host and device &
+             & with offloading "//infoMessage
+             OMPVV_ERROR(infoMessage)
            END IF
            
          OMPVV_REPORT_AND_RETURN()
