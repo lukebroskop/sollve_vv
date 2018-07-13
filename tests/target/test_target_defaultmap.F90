@@ -11,6 +11,7 @@
       PROGRAM test_target_defaultmap
         USE iso_fortran_env
         USE ompvv_lib
+        USE omp_lib
         implicit none
         
         OMPVV_TEST_OFFLOADING
