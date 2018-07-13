@@ -37,7 +37,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET(errors[1], (a[x] != 1));
+          OMPVV_TEST_AND_SET_VERBOSE(errors[1], (a[x] != 1));
+          break;
       }
 
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
@@ -49,7 +50,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET(errors[0], (a[x] != 1 + b[x]));
+          OMPVV_TEST_AND_SET_VERBOSE(errors[0], (a[x] != 1 + b[x]));
+          break;
       }
 
       #pragma omp target data map(to: a[0:1024], b[0:1024])
@@ -61,7 +63,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET(errors[1], a[x] != 2 + 2 * b[x]);
+          OMPVV_TEST_AND_SET_VERBOSE(errors[1], a[x] != 2 + 2 * b[x]);
+          break;
       }
   }
   else{
@@ -74,7 +77,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET(errors[1], a[x] != b[x] + 1);
+          OMPVV_TEST_AND_SET_VERBOSE(errors[1], a[x] != b[x] + 1);
+          break;
       }
 
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
@@ -86,7 +90,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET(errors[1], a[x] != 2 * b[x] + 1);
+          OMPVV_TEST_AND_SET_VERBOSE(errors[1], a[x] != 2 * b[x] + 1);
+          break;
       }
   }
 

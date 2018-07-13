@@ -15,7 +15,7 @@ int main() {
   int d[1024];
   int privatized;
   int ishost;
-  int errors[2] = {0,0};
+  int errors = 0;
 
   // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
@@ -37,24 +37,10 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, d[x] != (1 + x) * 2 * x);
       if (d[x] != (1 + x)*2*x){
-          if (isOffloading){
-              errors[0] += 1;
-          }
-          else{
-              errors[1] += 1;
-          }
+          break;
       }
-  }
-
-  if (!errors[0] && !errors[1]) {
-    OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));
-  } else if (errors[0]==0 && errors[1]!=0) {
-    OMPVV_ERROR("Test failed on host with offloading %s.", (isOffloading ? "enabled" : "disabled"));
-  } else if (errors[0]!=0 && errors[1]==0) {
-    OMPVV_ERROR("Test failed on device with offloading %s.", (isOffloading ? "enabled" : "disabled"));
-  } else if (errors[0]!=0 && errors[1]!=0) {
-    OMPVV_ERROR("Test failed on host and device with offloading %s.", (isOffloading ? "enabled" : "disabled"));
   }
 
   OMPVV_REPORT_AND_RETURN((errors[0] + errors[1]));

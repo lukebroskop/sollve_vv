@@ -32,12 +32,15 @@ int main() {
   }
 
   for (int x = 0; x < ARRAY_SIZE; ++x){
-      OMPVV_TEST_AND_SET(errors, (a[x] != 1 + b[x]));
+      OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] != 1 + b[x]));
+      if (a[x] != 1 + b[x]){
+          break;
+      }
   }
 
-
-  if (num_teams == 1)
+  if (num_teams == 1){
       OMPVV_WARNING("Test operated with one team.  Parallelism of teams distribute can't be guarunteed.");
+  }
 
   OMPVV_REPORT_AND_RETURN(errors);
 }

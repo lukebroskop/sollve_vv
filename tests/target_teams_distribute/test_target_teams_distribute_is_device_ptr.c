@@ -18,7 +18,7 @@ int main() {
   if (!c){
       OMPVV_WARNING("Test was unable to allocate memory on device.  Test could not procede.");
       OMPVV_REPORT_AND_RETURN(errors);
-  } 
+  }
   else {
       // a and b array initialization
       for (int x = 0; x < ARRAY_SIZE; ++x) {
@@ -36,7 +36,10 @@ int main() {
       }
 
       for (int x = 0; x < ARRAY_SIZE; ++x){
-          OMPVV_TEST_AND_SET(errors, (a[x] != 1 + b[x] + b[x] * b[x]));
+          OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] != 1 + b[x] + b[x] * b[x]));
+          if (a[x] != 1 + b[x] + b[x] * b[x]){
+              break;
+          }
       }
 
       OMPVV_REPORT_AND_RETURN(errors);

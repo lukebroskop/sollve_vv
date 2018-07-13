@@ -45,8 +45,8 @@ int main() {
       }
   }
 
-  OMPVV_TEST_AND_SET_VERBOSE(errors, (share < 0 || share >= SIZE));
-  OMPVV_ERROR_IF(errors, "The value of share is = %d", share); 
+  OMPVV_TEST_AND_SET_VERBOSE(errors, (share < -1 || share >= SIZE));
+  OMPVV_ERROR_IF(errors, "The value of share is = %d", share);
 
   share = 5;
 

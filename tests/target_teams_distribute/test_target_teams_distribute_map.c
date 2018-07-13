@@ -47,7 +47,7 @@ int main() {
       c[x] = 0;
   }
 
-  #pragma omp target data map(to: a[0:1024]) map(from: b[1024])
+  #pragma omp target data map(to: a[0:1024]) map(from: b[0:1024])
   {
       #pragma omp target teams distribute map(alloc: c[0:1024])
       for (int x = 0; x < 1024; ++x){

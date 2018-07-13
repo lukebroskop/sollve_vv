@@ -7,7 +7,6 @@
 
 int test_target_teams_distribute_depend_in_in(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -49,7 +48,6 @@ int test_target_teams_distribute_depend_in_in(){
 
 int test_target_teams_distribute_depend_in_out(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -117,7 +115,6 @@ int test_target_teams_distribute_depend_in_out(){
 
 int test_target_teams_distribute_depend_out_out(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -230,7 +227,6 @@ int test_target_teams_distribute_depend_out_out(){
 
 int test_target_teams_distribute_depend_out_in(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -298,7 +294,6 @@ int test_target_teams_distribute_depend_out_in(){
 
 int test_target_teams_distribute_depend_array_section(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -334,7 +329,6 @@ int test_target_teams_distribute_depend_array_section(){
 
 int test_target_teams_distribute_depend_disjoint_section(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -376,7 +370,6 @@ int test_target_teams_distribute_depend_disjoint_section(){
 
 int test_target_teams_distribute_depend_list(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
@@ -428,7 +421,6 @@ int test_target_teams_distribute_depend_list(){
 
 int test_target_teams_distribute_depend_unused_data(){
     int isOffloading = 0;
-    OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
     int a[1024];
     int b[1024];
     int c[1024];
