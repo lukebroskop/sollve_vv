@@ -23,8 +23,11 @@
         USE omp_lib
         USE testing_module
         implicit none
+        LOGICAL :: isSharedEnv
         
         OMPVV_TEST_OFFLOADING
+        OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
+
         OMPVV_TEST_VERBOSE(test_module_map_to_array() .ne. 0)
         OMPVV_TEST_VERBOSE(test_module_map_from_array() .ne. 0)
         OMPVV_TEST_VERBOSE(test_module_map_tofrom_array() .ne. 0)
@@ -66,9 +69,13 @@
             OMPVV_TEST_VERBOSE(ANY(helper_array_3d /= 10))
 
             ! check that it did not copy back
-            OMPVV_TEST_VERBOSE(ANY(array_1d /= 10))
-            OMPVV_TEST_VERBOSE(ANY(array_2d /= 10))
-            OMPVV_TEST_VERBOSE(ANY(array_3d /= 10))
+            IF (.not. isSharedEnv) THEN
+              OMPVV_TEST_VERBOSE(ANY(array_1d /= 10))
+              OMPVV_TEST_VERBOSE(ANY(array_2d /= 10))
+              OMPVV_TEST_VERBOSE(ANY(array_3d /= 10))
+            ELSE
+              OMPVV_WARNING("Part of test ommited: shared data env")
+            END IF
 
             OMPVV_GET_ERRORS(err_after)
 
@@ -103,11 +110,15 @@
               array_3d(:,:,:) = 20
             !$omp end target
 
-            OMPVV_TEST_VERBOSE(ALL(helper_array_1d == 999))
-            OMPVV_TEST_VERBOSE(ALL(helper_array_2d == 999))
-            OMPVV_TEST_VERBOSE(ALL(helper_array_3d == 999))
+            ! Checking that data is not copied to the device
+            IF (.not. isSharedEnv) THEN
+              OMPVV_TEST_VERBOSE(ALL(helper_array_1d == 999))
+              OMPVV_TEST_VERBOSE(ALL(helper_array_2d == 999))
+              OMPVV_TEST_VERBOSE(ALL(helper_array_3d == 999))
+            ELSE
+              OMPVV_WARNING("Part of test ommited: shared data env")
+            END IF
 
-            ! check that it did not copy back
             OMPVV_TEST_VERBOSE(ANY(array_1d /= 20))
             OMPVV_TEST_VERBOSE(ANY(array_2d /= 20))
             OMPVV_TEST_VERBOSE(ANY(array_3d /= 20))
@@ -145,11 +156,12 @@
               array_3d(:,:,:) = 20
             !$omp end target
 
+            ! Testing the to functionality
             OMPVV_TEST_VERBOSE(ANY(helper_array_1d /= 10))
             OMPVV_TEST_VERBOSE(ANY(helper_array_2d /= 10))
             OMPVV_TEST_VERBOSE(ANY(helper_array_3d /= 10))
 
-            ! check that it did not copy back
+            ! Testing the from functionality 
             OMPVV_TEST_VERBOSE(ANY(array_1d /= 20))
             OMPVV_TEST_VERBOSE(ANY(array_2d /= 20))
             OMPVV_TEST_VERBOSE(ANY(array_3d /= 20))
