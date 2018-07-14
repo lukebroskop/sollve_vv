@@ -272,7 +272,7 @@ clean: clear_fortran_mod
 
 .PHONY: clear_fortran_mod
 clear_fortran_mod::
-	- rm -f ./ompvv/ompvv_lib.mod
+	- rm -f ./ompvv/*.mod
 
 .PHONY: compilers
 compilers:
