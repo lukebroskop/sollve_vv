@@ -3,7 +3,7 @@
 #  USAGE: ./run_test.sh <APP> <LOG>.
 #    <LOG>: if present then it will  output of the tests in LOG.
 
-OMP_THREAD_LIMIT=160
+export OMP_THREAD_LIMIT=$(lscpu -p | grep -c "^[0-9]")
 
 function report ()
 {
