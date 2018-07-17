@@ -415,8 +415,10 @@ int test_target_teams_distribute_depend_list(){
     for (int x = 0; x < 1024; ++x){
         if (f[x] != 8 * x || g[x] != 9 * x){
             OMPVV_ERROR("Test of depend clause using multiple dependencies did not pass with offloading %s", (isOffloading ? "enabled" : "disabled"));
+            return 1;
         }
     }
+    return 0;
 }
 
 int test_target_teams_distribute_depend_unused_data(){
