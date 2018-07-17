@@ -59,11 +59,5 @@ int main() {
   }
   OMPVV_TEST_AND_SET_VERBOSE(errors, (share != 0));
 
-  if (!errors) {
-    OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));
-  } else {
-    OMPVV_ERROR("Test failed with offloading %s.", (isOffloading ? "enabled" : "disabled"));
-  }
-
   OMPVV_REPORT_AND_RETURN(errors);
 }

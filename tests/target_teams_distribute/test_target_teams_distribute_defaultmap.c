@@ -241,7 +241,7 @@ int test_defaultmap_off() {
     }
 
     for (int x = 0; x < ARRAY_SIZE; ++x){
-        OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(enum_array_b[x] != enum_array_a[x]));
+        OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array_b[x] != enum_array_a[x]);
         if (enum_array_b[x] != enum_array_a[x]){
             break;
         }
@@ -332,7 +332,7 @@ int test_defaultmap_off() {
     }
 
     // If not shared memory, test if the scalars were not modified
-    if (devtest == 1 && !isHost[x]) {
+    if (devtest == 1 && !isHost[0]) {
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_char != scalar_char_copy);
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_short != scalar_short_copy);
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_int != scalar_int_copy);
