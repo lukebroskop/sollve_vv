@@ -29,7 +29,13 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, a[x] != b[x]);
+      OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != b[x]);
+      if (a[x] != b[x]){
+          break;
+      }
+  }
+
+  for (int x = 0; x < 1024; ++x){
       b[x] = 0;
   }
 
@@ -42,7 +48,13 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, a[x] != b[x]);
+      OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != b[x]);
+      if (a[x] != b[x]){
+          break;
+      }
+  }
+
+  for (int x = 0; x < 1024; ++x){
       b[x] = 0;
       c[x] = 0;
   }
@@ -57,7 +69,13 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, a[x] != b[x]);
+      OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != b[x]);
+      if (a[x] != b[x]){
+          break;
+      }
+  }
+
+  for (int x = 0; x < 1024; ++x){
       b[x] = x;
   }
 
@@ -70,23 +88,35 @@ int main() {
   }
 
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, b[x] != 2 * x);
-      b[x] = 0;
-  }
-
-  #pragma omp target enter data map(to: a[0:1024])
-
-  #pragma omp target data map(from: b[0:1024])
-  {
-      #pragma omp target teams distribute map(release: a[0:1024])
-      for (int x = 0; x < 1024; ++x){
-          b[x] = a[x];
+      OMPVV_TEST_AND_SET_VERBOSE(errors, b[x] != 2 * x);
+      if (b[x] != 2 * x){
+          break;
       }
   }
 
-  OMPVV_TEST_AND_SET(errors, omp_target_is_present(&a, omp_get_default_device()));
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, b[x] != a[x]);
+      b[x] = 0;
+  }
+
+  #pragma omp target enter data map(to: a[0:1024])
+
+  #pragma omp target data map(from: b[0:1024])
+  {
+      #pragma omp target teams distribute map(release: a[0:1024])
+      for (int x = 0; x < 1024; ++x){
+          b[x] = a[x];
+      }
+  }
+
+  OMPVV_TEST_AND_SET_VERBOSE(errors, omp_target_is_present(&a, omp_get_default_device()));
+  for (int x = 0; x < 1024; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, b[x] != a[x]);
+      if (b[x] != a[x]){
+          break;
+      }
+  }
+
+  for (int x = 0; x < 1024; ++x){
       b[x] = 0;
   }
 
@@ -101,11 +131,17 @@ int main() {
       }
   }
 
-  OMPVV_TEST_AND_SET(errors, !omp_target_is_present(&a, omp_get_default_device()));
+  OMPVV_TEST_AND_SET_VERBOSE(errors, !omp_target_is_present(&a, omp_get_default_device()));
   #pragma omp target exit data map(release: a[0:1024])
-  OMPVV_TEST_AND_SET(errors, omp_target_is_present(&a, omp_get_default_device()));
+  OMPVV_TEST_AND_SET_VERBOSE(errors, omp_target_is_present(&a, omp_get_default_device()));
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, b[x] != a[x]);
+      OMPVV_TEST_AND_SET_VERBOSE(errors, b[x] != a[x]);
+      if (b[x] != a[x]){
+          break;
+      }
+  }
+
+  for (int x = 0; x < 1024; ++x){
       b[x] = 0;
   }
 
@@ -120,16 +156,13 @@ int main() {
       }
   }
 
-  OMPVV_TEST_AND_SET(errors, omp_target_is_present(&a, omp_get_default_device()));
+  OMPVV_TEST_AND_SET_VERBOSE(errors, omp_target_is_present(&a, omp_get_default_device()));
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET(errors, b[x] != a[x]);
+      OMPVV_TEST_AND_SET_VERBOSE(errors, b[x] != a[x]);
+      if (b[x] != a[x]){
+          break;
+      }
   }
 
-  if (!errors){
-      OMPVV_INFOMSG("Test passed with offloading %s", (isOffloading ? "enabled" : "disabled"));
-  }
-  else{
-      OMPVV_ERROR("Test failed with offloading %s", (isOffloading ? "enabled" : "disabled"));
-  }
   OMPVV_REPORT_AND_RETURN(errors);
 }

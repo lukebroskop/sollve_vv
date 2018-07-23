@@ -16,7 +16,7 @@ int main() {
   int privatized_array[10];
   int privatized = 0;
   int ishost;
-  int errors = 0
+  int errors = 0;
 
   // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
@@ -39,6 +39,7 @@ int main() {
               privatized++;
           }
           d[x] = c[x] * privatized;
+          privatized = 0;
       }
   }
 
@@ -57,12 +58,14 @@ int main() {
       }
   }
 
+  int temp;
   for (int x = 0; x < 1024; ++x){
-      OMPVV_TEST_AND_SET_VERBOSE(errors, d[x] != 1 + 3 * x + (x%10));
+      temp = x % 10;
+      OMPVV_TEST_AND_SET_VERBOSE(errors, d[x] != 1 + 3 * x + temp);
       if (d[x] != 1 + 3 * x + (x%10)){
           break;
       }
   }
 
-  OMPVV_REPORT_AND_RETURN((errors[0] + errors[1]));
+  OMPVV_REPORT_AND_RETURN(errors);
 }
