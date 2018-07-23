@@ -59,10 +59,10 @@
 #define OMPVV_TEST_VERBOSE(condition) call test_error_verbose(condition, "condition", __FILENAME__, __LINE__)
 
 ! Macro for setting errors on condition
-#define OMPVV_TEST_AND_SET(err, condition) err = test_and_set(condition, __FILENAME__, __LINE__)
+#define OMPVV_TEST_AND_SET(err, condition) err = err + test_and_set(condition, __FILENAME__, __LINE__)
 
 ! Macro for setting errors on condition and displaying an error if something went wrong
-#define OMPVV_TEST_AND_SET_VERBOSE(err, condition) err = test_and_set_verbose(condition, "condition", __FILENAME__, __LINE__)
+#define OMPVV_TEST_AND_SET_VERBOSE(err, condition) err = err + test_and_set_verbose(condition, "condition", __FILENAME__, __LINE__)
 
 ! Macro for reporting results
 #define OMPVV_REPORT() call report_errors(__FILENAME__)
@@ -163,11 +163,12 @@ module ompvv_lib
       LOGICAL, INTENT(IN) :: condition
       CHARACTER(len=*), INTENT(IN) :: fn
       INTEGER, INTENT(IN) :: ln
-      INTEGER :: test_and_set
+      INTEGER :: test_and_set, err_bf
+      err_bf = ompvv_errors
 
       call test_error(condition, fn, ln)
 
-      test_and_set = ompvv_errors
+      test_and_set = ompvv_errors - err_bf
     end function test_and_set
 
     ! Function to test an error condition, return the current value of ompvv_errors
@@ -177,11 +178,12 @@ module ompvv_lib
       CHARACTER(len=*) :: conditionStr
       CHARACTER(len=*) :: fn
       INTEGER :: ln
-      INTEGER :: test_and_set_verbose 
+      INTEGER :: test_and_set_verbose, err_bf
+      err_bf = ompvv_errors
 
       call test_error_verbose(condition, conditionStr, fn, ln)
 
-      test_and_set_verbose = ompvv_errors
+      test_and_set_verbose = ompvv_errors - err_bf
     end function test_and_set_verbose
 
     ! Function to report ompvv_errors
