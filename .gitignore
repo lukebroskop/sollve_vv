@@ -1,4 +1,4 @@
 bin
 logs
 results_report
-ompvv/ompvv_lib.mod
+ompvv/*.mod
