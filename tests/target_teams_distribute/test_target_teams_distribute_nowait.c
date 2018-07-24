@@ -30,20 +30,20 @@ int main() {
       g[x] = 0;
   }
 
-  #pragma omp target data map(to: a[0:1024], b[0:1024], d[0:1024], e[0:1024], is_host) map(from: c[0:1024], f[0:1024], g[0:1024])
+  #pragma omp target data map(to: a[0:1024], b[0:1024], d[0:1024], e[0:1024]) map(from: c[0:1024], f[0:1024], g[0:1024]) map(tofrom: is_host)
   {
       #pragma omp parallel
       {
-          #pragma omp target teams distribute nowait
+          #pragma omp target teams distribute nowait map(alloc: a[0:1024], b[0:1024], c[0:1024])
           for (int x = 0; x < 1024; ++x){
               c[x] = a[x] + b[x];
           }
-          #pragma omp target teams distribute nowait
+          #pragma omp target teams distribute nowait map(alloc: d[0:1024], e[0:1024], f[0:1024])
           for (int x = 0; x < 1024; ++x){
               f[x] = d[x] + e[x];
           }
           #pragma omp barrier
-          #pragma omp target teams distribute
+          #pragma omp target teams distribute map(alloc: is_host, c[0:1024], f[0:1024], g[0:1024])
           for (int x = 0; x < 1024; ++x){
               is_host = omp_is_initial_device();
               g[x] = c[x] + f[x];

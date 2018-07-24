@@ -21,11 +21,11 @@ int test_target_teams_distribute_depend_in_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom:c[0:1024])
     {
-        #pragma omp target teams distribute depend(in:c)
+        #pragma omp target teams distribute depend(in:c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] += a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(in:c)
+        #pragma omp target teams distribute depend(in:c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] += 2 * a[x] + b[x];
         }
@@ -63,11 +63,11 @@ int test_target_teams_distribute_depend_in_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(in: c)
+        #pragma omp target teams distribute depend(in: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }
@@ -82,11 +82,11 @@ int test_target_teams_distribute_depend_in_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(in: c)
+        #pragma omp target teams distribute depend(in: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + a[x];
         }
@@ -133,11 +133,11 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }
@@ -152,11 +152,11 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + a[x];
         }
@@ -170,11 +170,11 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }
@@ -188,11 +188,11 @@ int test_target_teams_distribute_depend_out_out(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + a[x];
         }
@@ -242,11 +242,11 @@ int test_target_teams_distribute_depend_out_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(in: c)
+        #pragma omp target teams distribute depend(in: c) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }
@@ -261,11 +261,11 @@ int test_target_teams_distribute_depend_out_in(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(inout: c)
+        #pragma omp target teams distribute depend(inout: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(in: c)
+        #pragma omp target teams distribute depend(in: c) map(alloc: a[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + a[x];
         }
@@ -308,11 +308,11 @@ int test_target_teams_distribute_depend_array_section(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(out: c[0:1024])
+        #pragma omp target teams distribute depend(out: c[0:1024]) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: c[0:1024])
+        #pragma omp target teams distribute depend(out: c[0:1024]) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }
@@ -343,11 +343,11 @@ int test_target_teams_distribute_depend_disjoint_section(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom:c[0:1024])
     {
-        #pragma omp target teams distribute depend(in:c[0:512])
+        #pragma omp target teams distribute depend(in:c[0:512]) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] += a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(in:c[512:512])
+        #pragma omp target teams distribute depend(in:c[512:512]) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] += 2 * a[x] + b[x];
         }
@@ -390,23 +390,23 @@ int test_target_teams_distribute_depend_list(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024], d[0:1024], e[0:1024]) map(from: f[0:1024], g[0:1024])
     {
-        #pragma omp target teams distribute depend(out: c)
+        #pragma omp target teams distribute depend(out: c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: d)
+        #pragma omp target teams distribute depend(out: d) map(alloc: a[0:1024], b[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = a[x] + b[x] + x;
         }
-        #pragma omp target teams distribute depend(out: c, d, e)
+        #pragma omp target teams distribute depend(out: c, d, e) map(alloc: c[0:1024], d[0:1024], e[0:1024])
         for (int x = 0; x < 1024; ++x){
             e[x] = c[x] + d[x];
         }
-        #pragma omp target teams distribute depend(out: e)
+        #pragma omp target teams distribute depend(out: e) map(alloc: a[0:1024], e[0:1024], f[0:1024])
         for (int x = 0; x < 1024; ++x){
             f[x] = e[x] + a[x];
         }
-        #pragma omp target teams distribute depend(out: e)
+        #pragma omp target teams distribute depend(out: e) map(alloc: b[0:1024], e[0:1024], g[0:1024])
         for (int x = 0; x < 1024; ++x){
             g[x] = e[x] + b[x];
         }
@@ -438,11 +438,11 @@ int test_target_teams_distribute_depend_unused_data(){
 
     #pragma omp target data map(to: a[0:1024], b[0:1024]) map(alloc: c[0:1024], random_data[0:1]) map(from: d[0:1024])
     {
-        #pragma omp target teams distribute depend(out: random_data)
+        #pragma omp target teams distribute depend(out: random_data) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
             c[x] = a[x] + b[x];
         }
-        #pragma omp target teams distribute depend(out: random_data)
+        #pragma omp target teams distribute depend(out: random_data) map(alloc: b[0:1024], c[0:1024], d[0:1024])
         for (int x = 0; x < 1024; ++x){
             d[x] = c[x] + b[x];
         }

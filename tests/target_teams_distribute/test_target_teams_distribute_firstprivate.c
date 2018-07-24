@@ -33,7 +33,7 @@ int main() {
   //Test privitization of data in firstprivate clause
   #pragma omp target data map(from: d[0:1024]) map(to: a[0:1024], b[0:1024], c[0:1024])
   {
-      #pragma omp target teams distribute firstprivate(privatized)
+      #pragma omp target teams distribute firstprivate(privatized) map(alloc: a[0:1024], b[0:1024], c[0:1024], d[0:1024])
       for (int x = 0; x < 1024; ++x){
           for (int y = 0; y < a[x] + b[x]; ++y){
               privatized++;
@@ -52,7 +52,7 @@ int main() {
   //Test initialization of data in firstprivate clause
   #pragma omp target data map(from: d[0:1024]) map(to: a[0:1024], b[0:1024], c[0:1024])
   {
-      #pragma omp target teams distribute firstprivate(privatized_array)
+      #pragma omp target teams distribute firstprivate(privatized_array) map(alloc: a[0:1024], b[0:1024], c[0:1024], d[0:1024])
       for (int x = 0; x < 1024; ++x){
           d[x] = a[x] + b[x] + c[x] + privatized_array[x%10];
       }

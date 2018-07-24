@@ -25,7 +25,7 @@ int main() {
 
   #pragma omp target data map(tofrom: default_num_teams)
   {
-      #pragma omp target teams distribute
+      #pragma omp target teams distribute map(tofrom: default_num_teams)
       for (int x = 0; x < 1024; ++x){
           default_num_teams = omp_get_num_teams();
       }

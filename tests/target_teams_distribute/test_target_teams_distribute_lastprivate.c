@@ -22,9 +22,9 @@ int main() {
       c[x] = 0;
   }
 
-  #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom: c[0:1024])
+  #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom: c[0:1024]) map(to: privatized)
   {
-      #pragma omp target teams distribute lastprivate(privatized)
+      #pragma omp target teams distribute lastprivate(privatized) map(to: a[0:1024], b[0:1024], c[0:1024])
       for (int x = 0; x < 1024; ++x){
           privatized = a[x] - b[x];
           c[x] = privatized + b[x];
@@ -37,6 +37,7 @@ int main() {
           break;
       }
   }
+
   OMPVV_TEST_AND_SET_VERBOSE(errors, privatized != a[1023] - b[1023]);
 
   for (int x = 0; x < 1024; ++x){
@@ -45,9 +46,9 @@ int main() {
       c[x] = x % 10;
   }
 
-  #pragma omp target data map(to: a[0:1024], b[0:1024], c[0:1024])
+  #pragma omp target data map(to: a[0:1024], b[0:1024], c[0:1024], privatized_array[0:2])
   {
-      #pragma omp target teams distribute lastprivate(privatized_array)
+      #pragma omp target teams distribute lastprivate(privatized_array) map(alloc: a[0:1024], b[0:1024], c[0:1024])
       for (int x = 0; x < 1024; ++x){
           privatized_array[0] = a[x] + b[x] + c[x];
           privatized_array[1] = (a[x] + b[x]) * c[x];
