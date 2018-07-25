@@ -29,7 +29,7 @@
         USE omp_lib
         implicit none
        
-         LOGICAL :: isOffloading, isHost
+         LOGICAL :: isOffloading, isHost, isSharedEnv
          INTEGER :: a(1:SIZE_ARRAY)
          INTEGER :: b(1:SIZE_ARRAY)
          INTEGER :: c(1:SIZE_ARRAY)
@@ -37,6 +37,12 @@
          CHARACTER(len=300) :: infoMessage
         
          OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
+         OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
+         IF (isSharedEnv) THEN 
+           WRITE(infoMessage, *) " working on a shared memory &
+           & environment. Test might be inconclusive"
+           OMPVV_WARNING(infoMessage)
+         END IF
          IF (.NOT. isOffloading) THEN 
            WRITE(infoMessage, *) "Offloading is off. Mighth not be&
            & possible to test if clause correctly "
@@ -85,7 +91,9 @@
              ! Checking data mapping 
              
              DO i = 1, s
-               IF (s > THRESHOLD) THEN
+               IF (s > THRESHOLD .OR. &
+                  & isSharedEnv .OR. &
+                  & .NOT. isOffloading) THEN
                  ! Should have done data maping of a, b, and c
                  OMPVV_TEST_AND_SET(errors(2), (c(i) /= SIZE_ARRAY))
                ELSE
@@ -131,7 +139,7 @@
              ! a, b and c arrays initialization
              a(:) = (/ (SIZE_ARRAY - i, i = 1, SIZE_ARRAY) /)
              b(:) = (/ (i - 1, i = 1, SIZE_ARRAY) /) 
-             c(:) = -1
+             c(:) = -10
              !$omp target data if(s > THRESHOLD) &
              !$omp map(to: a(1:s), b(1:s)) &
              !$omp map(tofrom: c(1:s)) 
@@ -141,7 +149,7 @@
                !$omp map(tofrom: isHost, s)
                  isHost = omp_is_initial_device()
                  alpha = 0
-                 if (isHost) alpha = SIZE_ARRAY + 1
+                 IF (isHost) alpha = SIZE_ARRAY + 1
                  c(1:s) = (/ (a(j) + b(j) + 1 - alpha, j = 1, s) /)
 
                  ! In case we have alloc, change the mem
@@ -164,10 +172,10 @@
              ! Checking data mapping 
              
              DO i = 1, s
-               IF (s > THRESHOLD) THEN
+               IF (s > THRESHOLD .AND. isOffloading) THEN
                  ! Should have done data maping of a, b, and c
                  OMPVV_TEST_AND_SET(errors(2), (c(i) /= SIZE_ARRAY))
-              ELSE
+               ELSE 
                  ! Should have not done data mapping of a, b or c
                  OMPVV_TEST_AND_SET(errors(3), (c(i) /= -1))
                END IF 
