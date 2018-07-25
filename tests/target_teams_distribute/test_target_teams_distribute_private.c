@@ -27,7 +27,7 @@ int main() {
 
   #pragma omp target data map(from: d[0:1024]) map(to: a[0:1024], b[0:1024], c[0:1024])
   {
-      #pragma omp target teams distribute private(privatized)
+      #pragma omp target teams distribute private(privatized) map(alloc: a[0:1024], b[0:1024], c[0:1024], d[0:1024])
       for (int x = 0; x < 1024; ++x){
           for (int y = 0; y < a[x] + b[x]; ++y){
               privatized++;

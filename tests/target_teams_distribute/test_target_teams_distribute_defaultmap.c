@@ -43,17 +43,15 @@ int test_defaultmap_on() {
 
 
   // Map the same array to multiple devices. initialize with device number
-  #pragma omp target data map(tofrom: char_array[0:ARRAY_SIZE], short_array[0:ARRAY_SIZE], int_array[0:ARRAY_SIZE], float_array[0:ARRAY_SIZE], double_array[0:ARRAY_SIZE], enum_array[0:ARRAY_SIZE])
-  {
-      #pragma omp target teams distribute defaultmap(tofrom: scalar)
-      for (int x = 0; x < ARRAY_SIZE; ++x){
-          scalar_char = char_array[x];
-          scalar_short = short_array[x];
-          scalar_int = int_array[x];
-          scalar_float = float_array[x];
-          scalar_double = double_array[x];
-          scalar_enum = enum_array[x];
-      }
+  #pragma omp target teams distribute defaultmap(tofrom: scalar) map(tofrom: char_array[0:ARRAY_SIZE], \
+    short_array[0:ARRAY_SIZE], int_array[0:ARRAY_SIZE], float_array[0:ARRAY_SIZE], double_array[0:ARRAY_SIZE], enum_array[0:ARRAY_SIZE])
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      scalar_char = char_array[x];
+      scalar_short = short_array[x];
+      scalar_int = int_array[x];
+      scalar_float = float_array[x];
+      scalar_double = double_array[x];
+      scalar_enum = enum_array[x];
   }
 
   for (int x = 0; x < ARRAY_SIZE; ++x){
@@ -109,7 +107,7 @@ int test_defaultmap_off() {
 
     // Checking for sharedmemory environment
     #pragma omp target enter data map(to: devtest)
-    #pragma omp target
+    #pragma omp target map(alloc: devtest)
     {
         devtest = 0;
     }
@@ -166,43 +164,40 @@ int test_defaultmap_off() {
 
 
     //Testing the privatization nature of firstprivate default action
-    #pragma omp target data map(tofrom: char_array_a[0:ARRAY_SIZE], char_array_b[0:ARRAY_SIZE], short_array_a[0:ARRAY_SIZE], \
+    #pragma omp target teams distribute map(tofrom: char_array_a[0:ARRAY_SIZE], char_array_b[0:ARRAY_SIZE], short_array_a[0:ARRAY_SIZE], \
       short_array_b[0:ARRAY_SIZE], int_array_a[0:ARRAY_SIZE], int_array_b[0:ARRAY_SIZE], float_array_a[0:ARRAY_SIZE], float_array_b[0:ARRAY_SIZE], \
       double_array_a[0:ARRAY_SIZE], double_array_b[0:ARRAY_SIZE], enum_array_a[0:ARRAY_SIZE], enum_array_b[0:ARRAY_SIZE])
-    {
-        #pragma omp target teams distribute
-        for (int x = 0; x < ARRAY_SIZE; ++x){
-            scalar_char = 0;
-            for (int y = 0; y < char_array_a[x]; ++y){
-                scalar_char += 1;
-            }
-            char_array_b[x] = scalar_char;
-            scalar_short = 0;
-            for (int y = 0; y < short_array_a[x]; ++y){
-                scalar_short += 1;
-            }
-            short_array_b[x] = scalar_short;
-            scalar_int = 0;
-            for (int y = 0; y < int_array_a[x]; ++y){
-                scalar_int += 1;
-            }
-            int_array_b[x] = scalar_int;
-            scalar_float = 0;
-            for (int y = 0; y < ((int)float_array_a[x]); ++y){
-                scalar_float += .7f;
-            }
-            float_array_b[x] = scalar_float;
-            scalar_double = 0;
-            for (int y = 0; y < ((int)double_array_a[x]); ++y){
-                scalar_double += .9;
-            }
-            double_array_b[x] = scalar_double;
-            scalar_enum = VAL1;
-            for (int y = 1; y < enum_array_a[x]; ++y){
-                scalar_enum += 1;
-            }
-            enum_array_b[x] = scalar_enum;
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        scalar_char = 0;
+        for (int y = 0; y < char_array_a[x]; ++y){
+            scalar_char += 1;
         }
+        char_array_b[x] = scalar_char;
+        scalar_short = 0;
+        for (int y = 0; y < short_array_a[x]; ++y){
+            scalar_short += 1;
+        }
+        short_array_b[x] = scalar_short;
+        scalar_int = 0;
+        for (int y = 0; y < int_array_a[x]; ++y){
+            scalar_int += 1;
+        }
+        int_array_b[x] = scalar_int;
+        scalar_float = 0;
+        for (int y = 0; y < ((int)float_array_a[x]); ++y){
+            scalar_float += .7f;
+        }
+        float_array_b[x] = scalar_float;
+        scalar_double = 0;
+        for (int y = 0; y < ((int)double_array_a[x]); ++y){
+            scalar_double += .9;
+        }
+        double_array_b[x] = scalar_double;
+        scalar_enum = VAL1;
+        for (int y = 1; y < enum_array_a[x]; ++y){
+            scalar_enum += 1;
+        }
+        enum_array_b[x] = scalar_enum;
     }
 
     for (int x = 0; x < ARRAY_SIZE; ++x){
@@ -262,17 +257,15 @@ int test_defaultmap_off() {
     scalar_enum_copy = scalar_enum;
 
     // Testing the copy of scalar values to the device
-    #pragma omp target data map(tofrom: char_array_a[0:ARRAY_SIZE], short_array_a[0:ARRAY_SIZE], int_array_a[0:ARRAY_SIZE], float_array_a[0:ARRAY_SIZE], double_array_a[0:ARRAY_SIZE], enum_array_a[0:ARRAY_SIZE])
-    {
-        #pragma omp target teams distribute
-        for (int x = 0; x < ARRAY_SIZE; ++x){
-            char_array_a[x] = scalar_char;
-            short_array_a[x] = scalar_short;
-            int_array_a[x] = scalar_int;
-            float_array_a[x] = scalar_float;
-            double_array_a[x] = scalar_double;
-            enum_array_a[x] = scalar_enum;
-        }
+    #pragma omp target teams distribute map(tofrom: char_array_a[0:ARRAY_SIZE], short_array_a[0:ARRAY_SIZE], int_array_a[0:ARRAY_SIZE], \
+      float_array_a[0:ARRAY_SIZE], double_array_a[0:ARRAY_SIZE], enum_array_a[0:ARRAY_SIZE])
+    for (int x = 0; x < ARRAY_SIZE; ++x){
+        char_array_a[x] = scalar_char;
+        short_array_a[x] = scalar_short;
+        int_array_a[x] = scalar_int;
+        float_array_a[x] = scalar_float;
+        double_array_a[x] = scalar_double;
+        enum_array_a[x] = scalar_enum;
     }
 
     // Testing the fact that values should not be modified

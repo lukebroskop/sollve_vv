@@ -23,7 +23,7 @@ int main() {
 
   #pragma omp target data map(tofrom: a[0:ARRAY_SIZE], num_teams, is_host) map(to: b[0:ARRAY_SIZE])
   {
-      #pragma omp target teams distribute
+      #pragma omp target teams distribute map(alloc: a[0:ARRAY_SIZE], b[0:ARRAY_SIZE], num_teams, is_host)
       for (int x = 0; x < ARRAY_SIZE; ++x){
           is_host = omp_is_initial_device();
           num_teams = omp_get_num_teams();

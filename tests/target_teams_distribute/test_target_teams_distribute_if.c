@@ -30,7 +30,7 @@ int main() {
       //There is a separate memory device, full data environment tests can procede
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
       {
-          #pragma omp target teams distribute if(b[0] > 1)
+          #pragma omp target teams distribute if(b[0] > 1) map(alloc: devtest)
           for (int x = 0; x < 1024; ++x){
               a[x] += b[x] + devtest;
           }
@@ -46,7 +46,7 @@ int main() {
 
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
       {
-          #pragma omp target teams distribute if(b[0] < 1)
+          #pragma omp target teams distribute if(b[0] < 1) map(alloc: devtest)
           for (int x = 0; x < 1024; ++x){
               a[x] += b[x] + devtest;
           }
@@ -62,7 +62,7 @@ int main() {
 
       #pragma omp target data map(to: a[0:1024], b[0:1024])
       {
-          #pragma omp target teams distribute if(b[0] > 1)
+          #pragma omp target teams distribute if(b[0] > 1) map(alloc: devtest)
           for (int x = 0; x < 1024; ++x){
               a[x] += b[x] + devtest;
           }
@@ -79,7 +79,7 @@ int main() {
   else{
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
       {
-          #pragma omp target teams distribute if(b[0] > 1)
+          #pragma omp target teams distribute if(b[0] > 1) map(alloc: devtest)
           for (int x = 0; x < 1024; ++x){
               a[x] += b[x] + devtest;
           }
@@ -94,7 +94,7 @@ int main() {
 
       #pragma omp target data map(tofrom: a[0:1024]) map(to: b[0:1024])
       {
-          #pragma omp target teams distribute if(b[0] < 1)
+          #pragma omp target teams distribute if(b[0] < 1) map(alloc: devtest)
           for (int x = 0; x < 1024; ++x){
               a[x] += b[x] + devtest;
           }

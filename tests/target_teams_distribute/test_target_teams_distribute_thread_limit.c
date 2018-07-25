@@ -9,23 +9,13 @@
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
-  int a[1024];
-  int b[1024];
-  int c[1024];
   int default_threads = 0;
   int num_threads = 0;
   int errors = 0;
 
-  // a and b array initialization
-  for (int x = 0; x < 1024; ++x) {
-      a[x] = 1;
-      b[x] = x;
-      c[x] = 0;
-  }
-
   #pragma omp target data map(tofrom: default_threads)
   {
-      #pragma omp target teams distribute
+      #pragma omp target teams distribute map(alloc: default_threads)
       for (int x = 0; x < 1024; ++x){
           default_threads = omp_get_thread_limit();
       }
@@ -39,7 +29,7 @@ int main() {
       errors = 1;
   }
   else{
-      #pragma omp target data map(to: a[0:1024], b[0:1024]) map(from: c[0:1024], num_threads)
+      #pragma omp target data map(from: num_threads)
       {
           #pragma omp target teams distribute thread_limit(default_threads - 1)
           for (int x = 0; x < 1024; ++x){

@@ -26,13 +26,10 @@ int main() {
           b[x] = x;
       }
 
-      #pragma omp target data map(tofrom: a[0:ARRAY_SIZE]) map(to: b[0:ARRAY_SIZE])
-      {
-          #pragma omp target teams distribute is_device_ptr(c)
-          for (int x = 0; x < ARRAY_SIZE; ++x){
-              c[x] = b[x] * b[x];
-              a[x] += c[x] + b[x];
-          }
+      #pragma omp target teams distribute is_device_ptr(c) map(tofrom: a[0:ARRAY_SIZE]) map(to: b[0:ARRAY_SIZE])
+      for (int x = 0; x < ARRAY_SIZE; ++x){
+          c[x] = b[x] * b[x];
+          a[x] += c[x] + b[x];
       }
 
       for (int x = 0; x < ARRAY_SIZE; ++x){

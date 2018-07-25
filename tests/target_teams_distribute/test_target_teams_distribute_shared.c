@@ -21,7 +21,7 @@ int main() {
 
   #pragma omp target data map(to: a[0:SIZE]) map(tofrom: share, num_teams)
   {
-      #pragma omp target teams distribute shared(share)
+      #pragma omp target teams distribute shared(share) map(alloc: a[0:SIZE], num_teams)
       for (int x = 0; x < SIZE; ++x){
           num_teams = omp_get_num_teams();
           #pragma omp atomic
@@ -39,7 +39,7 @@ int main() {
   share = -1;
   #pragma omp target data map(to: a[0:SIZE]) map(tofrom: share)
   {
-      #pragma omp target teams distribute shared(share)
+      #pragma omp target teams distribute shared(share) map(alloc: a[0:SIZE])
       for (int x = 0; x < SIZE; ++x){
           share = a[x];
       }
@@ -52,7 +52,7 @@ int main() {
 
   #pragma omp target data map(tofrom: a[0:SIZE]) map(tofrom: share)
   {
-      #pragma omp target teams distribute shared(share)
+      #pragma omp target teams distribute shared(share) map(alloc: a[0:SIZE])
       for (int x = 0; x < SIZE; ++x){
           a[x] = a[x] + share;
       }

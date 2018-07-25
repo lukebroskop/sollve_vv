@@ -22,7 +22,7 @@ int test_add(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024], b[0:1024])
     {
-        #pragma omp target teams distribute reduction(+:total)
+        #pragma omp target teams distribute reduction(+:total) map(alloc: a[0:1024], b[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             total += a[x] + b[x];
@@ -64,7 +64,7 @@ int test_and(){
 
         #pragma omp target data map(to: a[0:1024]) map(tofrom: num_teams)
         {
-            #pragma omp target teams distribute reduction(&&:result)
+            #pragma omp target teams distribute reduction(&&:result) map(alloc: a[0:1024], num_teams)
             for (int x = 0; x < 1024; ++x){
                 num_teams = omp_get_num_teams();
                 result = result && a[x];
@@ -108,7 +108,7 @@ int test_bitand(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024])
     {
-        #pragma omp target teams distribute reduction(&:b)
+        #pragma omp target teams distribute reduction(&:b) map(alloc[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             b = b & a[x];
@@ -146,7 +146,7 @@ int test_bitor(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024])
     {
-        #pragma omp target teams distribute reduction(|:b)
+        #pragma omp target teams distribute reduction(|:b) map(alloc: a[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             b = b | a[x];
@@ -180,7 +180,7 @@ int test_bitxor(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024])
     {
-        #pragma omp target teams distribute reduction(^:b)
+        #pragma omp target teams distribute reduction(^:b) map(alloc: a[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             b = (b ^ a[x]);
@@ -216,7 +216,7 @@ int test_max(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024], b[0:1024])
     {
-        #pragma omp target teams distribute reduction(max:result)
+        #pragma omp target teams distribute reduction(max:result) map(alloc: a[0:1024], b[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             result = fmax(a[x] + b[x], result);
             num_teams = omp_get_num_teams();
@@ -252,7 +252,7 @@ int test_min(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024], b[0:1024])
     {
-        #pragma omp target teams distribute reduction(min:result)
+        #pragma omp target teams distribute reduction(min:result) map(alloc: a[0:1024], b[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             result = fmin(result, a[x] + b[x]);
@@ -289,7 +289,7 @@ int test_multiply(){
     {
         for (int x = 0; x < 1024; x = x + 16){
             result = 1;
-            #pragma omp target teams distribute reduction(*:result)
+            #pragma omp target teams distribute reduction(*:result) map(alloc: a[0:1024], num_teams)
             for (int y = 0; y < 16; ++y){
                 result *= a[x];
             }
@@ -330,7 +330,7 @@ int test_or(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024])
     {
-        #pragma omp target teams distribute reduction(||:result)
+        #pragma omp target teams distribute reduction(||:result) map(alloc: a[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             result = result || a[x];
@@ -366,7 +366,7 @@ int test_subtraction(){
 
   #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024], b[0:1024])
   {
-      #pragma omp target teams distribute reduction(-:total)
+      #pragma omp target teams distribute reduction(-:total) map(alloc: a[0:1024], b[0:1024], num_teams)
       for (int x = 0; x < 1024; ++x){
           num_teams = omp_get_num_teams();
           total -= a[x] + b[x];
@@ -399,5 +399,6 @@ int main() {
   OMPVV_TEST_AND_SET_VERBOSE(total_errors, test_min() != 0);
   OMPVV_TEST_AND_SET_VERBOSE(total_errors, test_multiply() != 0);
   OMPVV_TEST_AND_SET_VERBOSE(total_errors, test_or() != 0);
+  OMPVV_TEST_AND_SET_VERBOSE(total_errors, test_subtraction() != 0);
   OMPVV_REPORT_AND_RETURN(total_errors);
 }
