@@ -1,3 +1,19 @@
+//===--- test_target_teams_distribute_depend.c-------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test defines a series of functions that enumerate the possible
+// combinations of the interactions of the depends clause with the various
+// dependence-types: in, out, inout.  With each combination, it tests if
+// the dependence between them (if necessary) is forced.  If there is no
+// required dependence, then the test tries to see if race conditions between
+// the two independent target regions can be formed.  However, if it fails
+// to do so, it only issues a warning as this is both a imperfect test of
+// the independence and it is not requried that they both execute at the
+// same time.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -458,7 +474,6 @@ int test_target_teams_distribute_depend_unused_data(){
 }
 
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int errors = 0;
   int isOffloading = 0;

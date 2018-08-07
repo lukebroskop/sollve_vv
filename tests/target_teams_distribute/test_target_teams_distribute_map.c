@@ -1,3 +1,14 @@
+//===--- test_target_teams_distribute_map.c----------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the map clause on a target teams distribute clause to test that
+// the indicated data is maped on the target in the fashion that is indicated
+// with the map-type.  Each map-type that is valid in this situation (to, from,
+// alloc, and tofrom) are each used and tested.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +16,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -14,7 +24,6 @@ int main() {
   int c[1024];
   int errors;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = x;
       b[x] = 0;

@@ -1,3 +1,13 @@
+//===--- test_target_teams_distribute_reduction.c----------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the reduction clause on a target teams distribute directive,
+// testing, for each operator, that the variable in the reduction clause is
+// properly reduced.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,7 +118,7 @@ int test_bitand(){
 
     #pragma omp target data map(tofrom: num_teams) map(to: a[0:1024])
     {
-        #pragma omp target teams distribute reduction(&:b) map(alloc[0:1024], num_teams)
+        #pragma omp target teams distribute reduction(&:b) map(alloc: a[0:1024], num_teams)
         for (int x = 0; x < 1024; ++x){
             num_teams = omp_get_num_teams();
             b = b & a[x];
@@ -385,9 +395,6 @@ int test_subtraction(){
   return errors;
 }
 
-
-
-// Test for OpenMP 4.5 target data with if
 int main() {
   int total_errors = 0;
   OMPVV_TEST_AND_SET_VERBOSE(total_errors, test_add() != 0);

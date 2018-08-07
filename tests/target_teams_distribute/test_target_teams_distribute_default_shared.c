@@ -1,3 +1,20 @@
+//===--- test_target_teams_distribute_default_shared.c-----------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the default(shared) clause on a target teams distribute
+// directive.  The test aims to validate that when the default(shared) clause
+// is present, that all variables without explicit data sharing attributes
+// will be shared within the region.  To test this, we test that a data element
+// that should be shared due to the default(shared) clause is available to
+// all the teams.  The first test uses atomic to write to the variable without
+// race conditions.  The second test allows these race contitions, but then
+// validates that the resulting value is one of the possible values.  The last
+// test, instead of testing writes, only reads from the variable and tests that
+// all teams can read the shared value.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +22,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -14,7 +30,6 @@ int main() {
   int errors = 0;
   int num_teams;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = x;
   }

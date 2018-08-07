@@ -1,3 +1,16 @@
+//===--- test_target_teams_distribute_private.c------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the private clause on a target teams distribute directive to
+// indicate that the variable in the private clause should be made private to
+// each team executing the teams distribute region.  The test then operates on
+// the privatized variable in such a way that would most likely cause competing
+// operations if the variable is not privatized.  If the computation completes
+// without errors, we assume that the privatization occured.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +18,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -17,7 +29,6 @@ int main() {
   int ishost;
   int errors = 0;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = 1;
       b[x] = x;
@@ -29,6 +40,7 @@ int main() {
   {
       #pragma omp target teams distribute private(privatized) map(alloc: a[0:1024], b[0:1024], c[0:1024], d[0:1024])
       for (int x = 0; x < 1024; ++x){
+          privatized = 0;
           for (int y = 0; y < a[x] + b[x]; ++y){
               privatized++;
           }
@@ -43,5 +55,5 @@ int main() {
       }
   }
 
-  OMPVV_REPORT_AND_RETURN((errors[0] + errors[1]));
+  OMPVV_REPORT_AND_RETURN(errors);
 }

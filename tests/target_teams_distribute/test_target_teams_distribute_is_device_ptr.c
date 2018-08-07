@@ -1,3 +1,14 @@
+//===--- test_target_teams_distribute_is_device_ptr.c------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses is_device_ptr clause to indicate that the parameter that is
+// given is already an address to the data on the device.  The parameter is set
+// using the omp_target_alloc which returns the pointer to the location on the
+// target that was allocated.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +17,6 @@
 #define SIZE_THRESHOLD 512
 #define ARRAY_SIZE 1024
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   OMPVV_TEST_OFFLOADING;
   OMPVV_INFOMSG("test target_teams_distribute_is_device_ptr");
@@ -20,7 +30,6 @@ int main() {
       OMPVV_REPORT_AND_RETURN(errors);
   }
   else {
-      // a and b array initialization
       for (int x = 0; x < ARRAY_SIZE; ++x) {
           a[x] = 1;
           b[x] = x;

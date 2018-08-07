@@ -1,3 +1,20 @@
+//===--- test_target_teams_distribute_num_teams.c----------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the num_teams clause on a target teams distribute directive to
+// indicate a requested number of teams to execute the teams distribute region.
+// The specifications indicate that the number of teams that are given can be any
+// number that is equal to or less than the indicated value.  We first run a
+// target teams distribute region without the clause to see what the default
+// number of teams is, and then we use a value that is less than that in the
+// test of the num_teams clause.  If the region is run with more teams than
+// indicated, the test errors.  If the region is run with less teams than
+// indicated, the test issues a warning since it is known that the device can
+// run with more teams than was actually given.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +22,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -16,7 +32,6 @@ int main() {
   int num_teams = 0;
   int errors = 0;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = 1;
       b[x] = x;

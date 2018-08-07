@@ -1,3 +1,13 @@
+//===--- test_target_teams_distribute_firstprivate.c-------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the firstprivate clause and tests it in two separate parts.
+// The test first tests the privatization of the firstprivatized scalars and
+// then separately tests the proper initialization of them separately
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +15,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -18,7 +27,6 @@ int main() {
   int ishost;
   int errors = 0;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = 1;
       b[x] = x;

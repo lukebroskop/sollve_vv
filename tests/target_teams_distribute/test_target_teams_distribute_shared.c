@@ -1,3 +1,25 @@
+//===--- test_target_teams_distribute_shared.c-------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the shared clause on a target teams distribute directive and
+// tests in a few ways that the variable is shared between the teams.  In the
+// first test, the atomic directive is used to indicate that all operations on
+// the variable should be done atomicly.  If the value is the correct value at
+// the end of the region, then all teams operated on the same variable.
+//
+// The second test sets the value of the shared value to a range of values.
+// Since the variable is being updated by each team, it is impossible to know
+// which value will be the last to be assigned to the variable.  However, we
+// test to make sure that the variable is assigned by one of the values that
+// could result from the operation.
+//
+// The third test, instead of writing to the variable, only reads from the
+// variable.  This tests that the value of the shared variable has not been
+// initiallized improperly or privatized.  
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +27,6 @@
 
 #define SIZE 1024
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -14,7 +35,6 @@ int main() {
   int errors = 0;
   int num_teams;
 
-  // a array initialization
   for (int x = 0; x < SIZE; ++x) {
       a[x] = x;
   }

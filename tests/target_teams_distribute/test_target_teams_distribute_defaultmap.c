@@ -1,7 +1,19 @@
-// RUN: %libomptarget-compile-run-and-check-aarch64-unknown-linux-gnu
-// RUN: %libomptarget-compile-run-and-check-powerpc64-ibm-linux-gnu
-// RUN: %libomptarget-compile-run-and-check-powerpc64le-ibm-linux-gnu
-// RUN: %libomptarget-compile-run-and-check-x86_64-pc-linux-gnu
+//===--- test_target_teams_distribute_defaultmap.c---------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the defaultmap clause on a target teams distribute directive.
+// This tests the following scalars: char, short, int, float, double, and enum.
+// Both using the clause defaultmap(tofrom:scalar) is used. When it is used,
+// the test tests the to nature by setting arrays to the value.  Then it is also
+// tested that, as opposed to the default action on scalars which is to first-
+// privatize them, they are shared and returned to the host.
+//
+// It also tests the default operation of treating scalars without the defaultmap
+// clause.  The test first tests the privatization of the firstprivatized
+// scalars and then separately tests the proper initialization of them separately
+//
+////===----------------------------------------------------------------------===//
 
 #include <assert.h>
 #include <omp.h>
@@ -32,6 +44,59 @@ int test_defaultmap_on() {
   enum enum_type scalar_enum = VAL1;
   enum enum_type enum_array[ARRAY_SIZE];
 
+  #pragma omp target teams distribute defaultmap(tofrom: scalar) map(from: char_array[0:ARRAY_SIZE], \
+    short_array[0:ARRAY_SIZE], int_array[0:ARRAY_SIZE], float_array[0:ARRAY_SIZE], double_array[0:ARRAY_SIZE], enum_array[0:ARRAY_SIZE])
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      char_array[x] = scalar_char;
+      short_array[x] = scalar_short;
+      int_array[x] = scalar_int;
+      float_array[x] = scalar_float;
+      double_array[x] = scalar_double;
+      enum_array[x] = scalar_enum;
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, char_array[x] != 'a');
+      if (char_array[x] != 1){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, short_array[x] != 10);
+      if (short_array[x] != 2){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, int_array[x] != 11);
+      if (int_array[x] != 3){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(float_array[x] - 5.5f) > .0000001);
+      if (fabs(float_array[x] - .4) > .0000000001){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(double_array[x] - 10.45) > .0000000001);
+      if (fabs(double_array[x] - .5) > .0000000001){
+          break;
+      }
+  }
+
+  for (int x = 0; x < ARRAY_SIZE; ++x){
+      OMPVV_TEST_AND_SET_VERBOSE(errors, enum_array[x] != VAL1);
+      if (enum_array[x] != VAL2){
+          break;
+      }
+  }
+
   for (int x = 0; x < ARRAY_SIZE; ++x){
       char_array[x] = 1;
       short_array[x] = 2;
@@ -41,8 +106,6 @@ int test_defaultmap_on() {
       enum_array[x] = VAL2;
   }
 
-
-  // Map the same array to multiple devices. initialize with device number
   #pragma omp target teams distribute defaultmap(tofrom: scalar) map(tofrom: char_array[0:ARRAY_SIZE], \
     short_array[0:ARRAY_SIZE], int_array[0:ARRAY_SIZE], float_array[0:ARRAY_SIZE], double_array[0:ARRAY_SIZE], enum_array[0:ARRAY_SIZE])
   for (int x = 0; x < ARRAY_SIZE; ++x){
@@ -53,6 +116,13 @@ int test_defaultmap_on() {
       scalar_double = double_array[x];
       scalar_enum = enum_array[x];
   }
+
+  OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_char != char_array[0]);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_short != short_array[0]);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_int != int_array[0]);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_float - float_array[0]) > .0000001);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, fabs(scalar_double - double_array[0]) > .0000000001);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_enum != enum_array[0]);
 
   for (int x = 0; x < ARRAY_SIZE; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, char_array[x] != 1);
@@ -95,6 +165,8 @@ int test_defaultmap_on() {
           break;
       }
   }
+
+
 
   return errors;
 }

@@ -1,3 +1,14 @@
+//===--- test_target_teams_distribute_nowait.c-------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the nowait clause on a target teams distribute directive and
+// uses a barrier to resyncronize the target regions.  Since we can't be sure
+// that operations will be asyncronous, we can not test to make sure that
+// the regions are executed asynchronously.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +16,6 @@
 
 #define SIZE_THRESHOLD 512
 
-// Test for OpenMP 4.5 target data with if
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
@@ -19,7 +29,6 @@ int main() {
   int errors = 0;
   int is_host;
 
-  // a and b array initialization
   for (int x = 0; x < 1024; ++x) {
       a[x] = x;
       b[x] = 2 * x;

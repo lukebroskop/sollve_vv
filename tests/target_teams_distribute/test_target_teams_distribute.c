@@ -1,3 +1,12 @@
+//===--- test_target_teams_distribute.c--------------------------------------===//
+//
+// OpenMP API Version 4.5 Nov 2015
+//
+// This test uses the target teams distribute directive and tests to validate
+// that computation inside the region executes properly.
+//
+////===----------------------------------------------------------------------===//
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
