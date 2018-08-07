@@ -81,7 +81,7 @@
          END DO ! s
       
          infoMessage = MERGE("enabled ", "disabled", isOffloading)
-           IF ( errors(1) == 0 .AND. errors(2) == 0) THEN 
+           IF (errors(1) == 0 .AND. errors(2) == 0) THEN 
              infoMessage = "Test passed with offloading "//infoMessage
              OMPVV_INFOMSG(infoMessage)
            ELSE IF (errors(1) == 0 .AND. errors(2) /= 0) THEN

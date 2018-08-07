@@ -100,11 +100,12 @@
             !$omp target map(from: array_1d, array_2d, array_3d) &
             !$omp map(from: helper_array_1d, helper_array_2d) &
             !$omp map(from: helper_array_3d)
+              ! This array should not be copied over to the device
               helper_array_1d = array_1d
               helper_array_2d = array_2d
               helper_array_3d = array_3d
 
-              ! This value should not be copied back
+              ! This value should be copied back
               array_1d(:) = 20
               array_2d(:,:) = 20
               array_3d(:,:,:) = 20
