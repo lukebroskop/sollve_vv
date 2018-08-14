@@ -56,7 +56,7 @@ int main() {
   else{
       #pragma omp target data map(to: a[0:1024], b[0:1024]) map(from: c[0:1024], num_teams)
       {
-          #pragma omp target teams distribute num_teams(default_num_teams - 1)
+          #pragma omp target teams distribute num_teams(default_num_teams - 1) map(alloc: num_teams)
           for (int x = 0; x < 1024; ++x){
               num_teams = omp_get_num_teams();
           }

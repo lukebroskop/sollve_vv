@@ -33,7 +33,7 @@ int main() {
 
 
   #pragma omp target enter data map(to: devtest)
-  #pragma omp target
+  #pragma omp target map(alloc: devtest)
   {
       devtest = 0;
   }

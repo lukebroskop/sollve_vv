@@ -47,7 +47,7 @@ int main() {
   else{
       #pragma omp target data map(from: num_threads)
       {
-          #pragma omp target teams distribute thread_limit(default_threads - 1)
+          #pragma omp target teams distribute thread_limit(default_threads - 1) map(alloc: num_threads)
           for (int x = 0; x < 1024; ++x){
               num_threads = omp_get_thread_limit();
           }

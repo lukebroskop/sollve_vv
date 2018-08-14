@@ -33,9 +33,21 @@ int main() {
       c[x] = 0;
   }
 
-  #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom: c[0:1024], privatized)
+
+  privatized = 10;
+  printf("privatized = %d", privatized);
+  privatized = 20;
+  #pragma omp target teams distribute lastprivate(privatized) map(from: privatized)
+  for (int x = 0; x < 1024; ++x){
+    privatized = x;
+  }
+  printf("privatized = %d", privatized);
+  printf("privatized = %d", privatized);
+
+
+  #pragma omp target data map(to: a[0:1024], b[0:1024]) map(tofrom: c[0:1024])
   {
-      #pragma omp target teams distribute lastprivate(privatized) map(to: a[0:1024], b[0:1024], c[0:1024])
+      #pragma omp target teams distribute lastprivate(privatized) map(to: a[0:1024], b[0:1024], c[0:1024]) map(from: privatized)
       for (int x = 0; x < 1024; ++x){
           privatized = a[x] - b[x];
           c[x] = privatized + b[x];
