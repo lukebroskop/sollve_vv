@@ -10,7 +10,7 @@
 
 #define N 50
 
-      PROGRAM test_target_
+      PROGRAM test_target_data_map_from
         USE iso_fortran_env
         USE ompvv_lib
         USE omp_lib
