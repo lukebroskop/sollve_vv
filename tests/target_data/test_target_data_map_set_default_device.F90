@@ -10,7 +10,7 @@
 
 #define N 5000
 
-      PROGRAM test_target_data_devices
+      PROGRAM test_target_data_map_set_default_device
         USE iso_fortran_env
         USE ompvv_lib
         USE omp_lib
@@ -41,7 +41,6 @@
           ! Testing set default device API
           INTEGER FUNCTION test_set_default_device()
             INTEGER :: def_dev, dev_data, dev_comp
-            INTEGER :: errors_bf, errors_af
             INTEGER, dimension(N) :: anArray
 
             OMPVV_INFOMSG("using set_default_device")
@@ -80,17 +79,14 @@
               !$omp end target data
             END DO ! dev_data
               
-            OMPVV_GET_ERRORS(errors_bf)
             OMPVV_TEST_VERBOSE(ANY(anArray /= num_dev + 1))
-            OMPVV_GET_ERRORS(errors_af)
 
             ! return the default device to the 
             ! original default 
             CALL omp_set_default_device(def_dev)
 
-            test_set_default_device = errors_bf - errors_af
+            OMPVV_GET_ERRORS(test_set_default_device)
 
           END FUNCTION test_set_default_device
-      END PROGRAM
+      END PROGRAM test_target_data_map_set_default_device
 
-  
