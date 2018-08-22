@@ -41,7 +41,6 @@
           ! Testing set device with deviceclause
           INTEGER FUNCTION test_device_clause()
           INTEGER :: dev_data, dev_comp
-          INTEGER :: errors_bf, errors_af
           INTEGER, dimension(N) :: anArray
 
           OMPVV_INFOMSG("using device() clause")
@@ -73,13 +72,10 @@
              !$omp end target data
             END DO ! dev_data
               
-            OMPVV_GET_ERRORS(errors_bf)
             OMPVV_TEST_VERBOSE(ANY(anArray /= num_dev + 1))
-            OMPVV_GET_ERRORS(errors_af)
 
-            test_device_clause = errors_bf - errors_af
+            OMPVV_GET_ERRORS(test_device_clause)
 
           END FUNCTION test_device_clause
-      END PROGRAM
+      END PROGRAM test_target_data_devices
 
-  
