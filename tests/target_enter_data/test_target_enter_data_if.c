@@ -53,10 +53,11 @@ int main() {
     for (i = 0; i < size; i++) {
       c[i] = -1;
     }
-#pragma omp target enter data if(size > SIZE_THRESHOLD) map(to: size) 
+#pragma omp target enter data if(size > SIZE_THRESHOLD) map(to: size) \
+    map (to: a[0:size], b[0:size])
            
 #pragma omp target if(size > SIZE_THRESHOLD)  \
-        map(to: a[0:size], b[0:size])  map(tofrom: c[0:size], isHost)
+        map(alloc: a[0:size], b[0:size])  map(tofrom: c[0:size], isHost)
 {
         isHost = omp_is_initial_device();
         int alpha = (isHost ? 0 : 1);
