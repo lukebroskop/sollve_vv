@@ -23,7 +23,7 @@ int main() {
   int c[1024];
   int d[1024];
   int privatized;
-  int share;
+  int share = 0;
   int x;
   int errors = 0;
 
@@ -46,7 +46,7 @@ int main() {
       }
   }
 
-  for (int x = 0; x < 1024; ++x){
+  for (x = 0; x < 1024; ++x){
       OMPVV_TEST_AND_SET_VERBOSE(errors, (d[x] != (1 + x)*2*x));
       if (d[x] != (1 + x)*2*x){
           break;
@@ -61,7 +61,6 @@ int main() {
           share = share + b[x];
       }
   }
-
   for (int x = 0; x < 1024; ++x){
       share = share - x;
   }
