@@ -1,4 +1,4 @@
-!===--test_target_enter_data_allocate_array_alloc.F90 - allocate array map to--===!
+!===--test_target_enter_data_allocate_array_alloc.F90 - allocate array map alloc--===!
 ! 
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -45,7 +45,7 @@
           ! 1D Array test
           INTEGER FUNCTION test_allocate_array1D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map to of allocate 1D array")
+            OMPVV_INFOMSG("Testing map alloc of allocate 1D array")
             errors = 0
             ! Allocate the arrays
             allocate(my1DPtr(N))
@@ -63,16 +63,15 @@
 
             ! Confirm mapping with target region
             !$omp target map(from: my1DArr) 
-            ! make sure it does not get mapped again
               my1DArr = my1DPtr
             !$omp end target
-
-            ! This is not part of the test but it is necessary to avoid
 
             IF (.NOT. isSharedEnv) THEN
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my1DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my1DArr) /= ((N*(N+1)/2)))
+
+            ! This is not part of the test but it is necessary to avoid
             ! having memory leaks
             !$omp target exit data map(delete: my1DPtr)
             deallocate(my1DPtr)
@@ -83,7 +82,7 @@
           ! 2D Array test
           INTEGER FUNCTION test_allocate_array2D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map to of allocate 2D array")
+            OMPVV_INFOMSG("Testing map alloc of allocate 2D array")
             errors = 0
             ! Allocate the arrays
             allocate(my2DPtr(N,N))
@@ -101,16 +100,15 @@
 
             ! Confirm mapping with target region
             !$omp target map(from: my2DArr) 
-            ! make sure it does not get mapped again
               my2DArr = my2DPtr
             !$omp end target
-
-            ! This is not part of the test but it is necessary to avoid
 
             IF (.NOT. isSharedEnv) THEN
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my2DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my2DArr) /= ((N**2*(N**2+1)/2)))
+
+            ! This is not part of the test but it is necessary to avoid
             ! having memory leaks
             !$omp target exit data map(delete: my2DPtr)
             deallocate(my2DPtr)
@@ -121,7 +119,7 @@
           ! 3D Array test
           INTEGER FUNCTION test_allocate_array3D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map to of allocate 3D array")
+            OMPVV_INFOMSG("Testing map alloc of allocate 3D array")
             errors = 0
             ! Allocate the arrays
             allocate(my3DPtr(N,N,N))
@@ -139,16 +137,16 @@
 
             ! Confirm mapping with target region
             !$omp target map(from: my3DArr) 
-            ! make sure it does not get mapped again
               my3DArr = my3DPtr
             !$omp end target
 
-            ! This is not part of the test but it is necessary to avoid
 
             IF (.NOT. isSharedEnv) THEN
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my3DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my3DArr) /= ((N**3*(N**3+1)/2)))
+
+            ! This is not part of the test but it is necessary to avoid
             ! having memory leaks
             !$omp target exit data map(delete: my3DPtr)
             deallocate(my3DPtr)
