@@ -115,18 +115,20 @@
 
             ! Checking that the data was copied to the device
             IF (.NOT. isSharedEnv) THEN
-              OMPVV_TEST_VERBOSE(cpyStruct%myInt == 5)
-              OMPVV_TEST_VERBOSE(cpyStruct%myStr .EQ. 'there')
-              OMPVV_TEST_VERBOSE(ABS(cpyStruct%myReal - 4.4) .LT. 0.0001)
-              OMPVV_TEST_VERBOSE(ALL(cpyStruct%myArr == 10))
-              OMPVV_TEST_VERBOSE(.NOT. ASSOCIATED(cpyStruct%myPtr, justATarget))
+              WRITE(auxMessage, *) "Array seemed to have been copied to &
+                & the device when using the from modifier."
+              OMPVV_WARNING_IF(cpyStruct%myInt == 5, auxMessage)
+              OMPVV_WARNING_IF(cpyStruct%myStr .EQ. 'there', auxMessage)
+              OMPVV_WARNING_IF(ABS(cpyStruct%myReal - 4.4) .LT. 0.0001, auxMessage)
+              OMPVV_WARNING_IF(ALL(cpyStruct%myArr == 10), auxMessage)
+              OMPVV_WARNING_IF(.NOT. ASSOCIATED(cpyStruct%myPtr, justATarget), auxMessage)
 
               DO i = 1, 10 
-                OMPVV_TEST_VERBOSE(cpyStructArr(i)%myInt == 5)
-                OMPVV_TEST_VERBOSE(cpyStructArr(i)%myStr .EQ. 'there')
-                OMPVV_TEST_VERBOSE(ABS(cpyStructArr(i)%myReal - 4.4) .LT. 0.0001)
-                OMPVV_TEST_VERBOSE(ANY(cpyStructArr(i)%myArr == 10))
-                OMPVV_TEST_VERBOSE(.NOT. ASSOCIATED(cpyStructArr(i)%myPtr, justATarget))
+                OMPVV_WARNING_IF(cpyStructArr(i)%myInt == 5, auxMessage)
+                OMPVV_WARNING_IF(cpyStructArr(i)%myStr .EQ. 'there', auxMessage)
+                OMPVV_WARNING_IF(ABS(cpyStructArr(i)%myReal - 4.4) .LT. 0.0001, auxMessage)
+                OMPVV_WARNING_IF(ANY(cpyStructArr(i)%myArr == 10), auxMessage)
+                OMPVV_WARNING_IF(.NOT. ASSOCIATED(cpyStructArr(i)%myPtr, justATarget), auxMessage)
               END DO
             END IF
 
