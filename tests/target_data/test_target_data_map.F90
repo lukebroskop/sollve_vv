@@ -17,6 +17,7 @@
         USE omp_lib
         implicit none
         LOGICAL :: isSharedEnv
+        CHARACTER (len=400) :: msgHelper
         
         OMPVV_TEST_OFFLOADING
         OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
@@ -31,7 +32,7 @@
         CONTAINS 
           ! Testing from:
           INTEGER FUNCTION test_target_data_map_from()
-            ! heap and stacka
+            ! heap and stack
             INTEGER, DIMENSION(N) :: h_array_s, aux_array
             INTEGER, POINTER, DIMENSION(:) :: h_array_h
             INTEGER :: err_bf, err_af, i
@@ -56,8 +57,11 @@
               !$omp end target
             !$omp end target data  
 
-            IF (.not. isSharedEnv) THEN
-              OMPVV_TEST_VERBOSE(SUM(aux_array) == SUM((/ (2*i, i=1,N)/)))
+            IF (.NOT. isSharedEnv .AND. &
+                & SUM(aux_array) == SUM((/ (2*i, i=1,N)/))) THEN
+              WRITE(msgHelper, *) "Possible data moved to the device &
+                &when using the from modifier"
+              OMPVV_WARNING(msgHelper)
             END IF
             OMPVV_TEST_VERBOSE(ANY(h_array_h /= 10))
             OMPVV_TEST_VERBOSE(ANY(h_array_s /= 20))
@@ -179,7 +183,11 @@
 
             OMPVV_TEST_VERBOSE(SUM(aux_array2) /= 30 * N )
             IF (.not. isSharedEnv) THEN
-              OMPVV_TEST_VERBOSE(SUM(aux_array) == SUM((/ (2*i, i=1,N)/)))
+              IF (SUM(aux_array) == SUM((/ (2*i, i=1,N)/))) THEN
+                WRITE(msgHelper, *) "Possible data moved to the device &
+                  &when using the alloc modifier"
+                OMPVV_WARNING(msgHelper)
+              END IF
               OMPVV_TEST_VERBOSE(ALL(h_array_h == 10))
               OMPVV_TEST_VERBOSE(ALL(h_array_s == 20))
             ELSE 

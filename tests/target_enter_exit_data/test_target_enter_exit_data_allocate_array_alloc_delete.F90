@@ -1,16 +1,17 @@
-!===--test_target_enter_data_allocate_array_alloc.F90 - allocate array map alloc--===!
+!===--test_target_enter_exit_data_allocate_array_alloc_delete.F90 - alloc/delete--===!
 ! 
 ! OpenMP API Version 4.5 Nov 2015
 !
-! Testing the mapping of arrays that are allocated dynamically. This tests
-! covers multiple array dimmensions and uses target enter data map(to) 
+! This tests covers the target enter/exit data with the
+! map(alloc/delete) modifiers respectively, for arrays that have the
+! allocatable modifier and that are dynamically generated. 
 !
 !!===----------------------------------------------------------------------===!
 #include "ompvv.F90"
 
 #define N 20
 
-      PROGRAM tests_target_enter_data_allocate_array_alloc
+      PROGRAM tests_target_enter_exit_data_allocate_array_alloc
         USE iso_fortran_env
         USE ompvv_lib
         USE omp_lib
@@ -45,7 +46,7 @@
           ! 1D Array test
           INTEGER FUNCTION test_allocate_array1D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map alloc of allocate 1D array")
+            OMPVV_INFOMSG("Testing map alloc/delete allocated 1D array")
             errors = 0
             ! Allocate the arrays
             allocate(my1DPtr(N))
@@ -67,13 +68,26 @@
             !$omp end target
 
             IF (.NOT. isSharedEnv) THEN
+              ! Make sure data does not get transfered over the host
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my1DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my1DArr) /= ((N*(N+1)/2)))
 
-            ! This is not part of the test but it is necessary to avoid
-            ! having memory leaks
-            !$omp target exit data map(delete: my1DPtr)
+            ! Asign a host value
+            my1DPtr(:) = 10
+
+            !$omp target exit data map(delete: my1DPtr(:))
+
+            ! Check if I can transfer data with a map(tofrom:)
+            !$omp target map(from: my1DArr) map(tofrom: my1DPtr(:))
+              my1DArr = my1DPtr
+              my1DPtr(:) = 20
+            !$omp end target
+
+            ! test that the values are the expected ones
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my1DPtr /= 20))
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my1DArr /= 10))
+
             deallocate(my1DPtr)
 
             test_allocate_array1D_map_alloc = errors
@@ -82,7 +96,7 @@
           ! 2D Array test
           INTEGER FUNCTION test_allocate_array2D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map alloc of allocate 2D array")
+            OMPVV_INFOMSG("Testing map alloc/delete allocated 2D array")
             errors = 0
             ! Allocate the arrays
             allocate(my2DPtr(N,N))
@@ -103,23 +117,35 @@
               my2DArr = my2DPtr
             !$omp end target
 
+
             IF (.NOT. isSharedEnv) THEN
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my2DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my2DArr) /= ((N**2*(N**2+1)/2)))
 
-            ! This is not part of the test but it is necessary to avoid
-            ! having memory leaks
-            !$omp target exit data map(delete: my2DPtr)
-            deallocate(my2DPtr)
+            ! Asign a host value
+            my2DPtr(:,:) = 10
 
+            !$omp target exit data map(delete: my2DPtr(:,:))
+
+            ! Check if I can transfer data with a map(tofrom:)
+            !$omp target map(from: my2DArr) map(tofrom: my2DPtr(:,:))
+              my2DArr = my2DPtr
+              my2DPtr(:,:) = 20
+            !$omp end target
+
+            ! test that the values are the expected ones
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my2DPtr /= 20))
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my2DArr /= 10))
+
+            deallocate(my2DPtr)
             test_allocate_array2D_map_alloc = errors
 
           END FUNCTION test_allocate_array2D_map_alloc
           ! 3D Array test
           INTEGER FUNCTION test_allocate_array3D_map_alloc()
 
-            OMPVV_INFOMSG("Testing map alloc of allocate 3D array")
+            OMPVV_INFOMSG("Testing map alloc/delete allocated 3D array")
             errors = 0
             ! Allocate the arrays
             allocate(my3DPtr(N,N,N))
@@ -145,14 +171,25 @@
               OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my3DPtr /= 0))
             END IF
             OMPVV_TEST_AND_SET_VERBOSE(errors, SUM(my3DArr) /= ((N**3*(N**3+1)/2)))
+            ! Asign a host value
+            my3DPtr(:,:,:) = 10
 
-            ! This is not part of the test but it is necessary to avoid
-            ! having memory leaks
-            !$omp target exit data map(delete: my3DPtr)
+            !$omp target exit data map(delete: my3DPtr(:,:,:))
+
+            ! Check if I can transfer data with a map(tofrom:)
+            !$omp target map(from: my3DArr) map(tofrom: my3DPtr(:,:,:))
+              my3DArr = my3DPtr
+              my3DPtr(:,:,:) = 20
+            !$omp end target
+
+            ! test that the values are the expected ones
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my3DPtr /= 20))
+            OMPVV_TEST_AND_SET_VERBOSE(errors, ANY(my3DArr /= 10))
+
             deallocate(my3DPtr)
 
             test_allocate_array3D_map_alloc = errors
 
           END FUNCTION test_allocate_array3D_map_alloc
-      END PROGRAM tests_target_enter_data_allocate_array_alloc
+      END PROGRAM tests_target_enter_exit_data_allocate_array_alloc
 
