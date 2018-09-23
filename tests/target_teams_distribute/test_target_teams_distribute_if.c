@@ -118,8 +118,8 @@ int main() {
       }
 
       for (int x = 0; x < 1024; ++x){
-          OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != 2 * b[x]);
-          if (a[x] != 2 * b[x]){
+          OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != 1 + 2 * b[x]);
+          if (a[x] != 1 + 2 * b[x]){
               break;
           }
       }
