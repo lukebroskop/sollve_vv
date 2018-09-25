@@ -342,7 +342,7 @@ int test_defaultmap_off() {
 
     // Testing the fact that values should not be modified
     // at the host (unless shared memory or running on the host)
-    #pragma omp target teams distribute
+    #pragma omp target teams distribute map(from: isHost[0:ARRAY_SIZE])
     for (int x = 0; x < ARRAY_SIZE; ++x){
         scalar_char = 0;
         scalar_short = 0;
