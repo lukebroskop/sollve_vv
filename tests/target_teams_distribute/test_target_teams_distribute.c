@@ -14,16 +14,14 @@
 
 #define ARRAY_SIZE 1024
 
-// Test for OpenMP 4.5 target data with if
 int main() {
-  OMPVV_TEST_OFFLOADING;
-
   int a[ARRAY_SIZE];
   int b[ARRAY_SIZE];
   int num_teams = 0;
   int errors = 0;
   int is_host;
 
+  OMPVV_TEST_AND_SET_OFFLOADING(is_host);
   // a and b array initialization
   for (int x = 0; x < ARRAY_SIZE; ++x) {
       a[x] = 1;
@@ -34,7 +32,6 @@ int main() {
   {
       #pragma omp target teams distribute map(alloc: a[0:ARRAY_SIZE], b[0:ARRAY_SIZE], num_teams, is_host)
       for (int x = 0; x < ARRAY_SIZE; ++x){
-          is_host = omp_is_initial_device();
           num_teams = omp_get_num_teams();
           a[x] += b[x];
       }
@@ -49,6 +46,9 @@ int main() {
 
   if (num_teams == 1){
       OMPVV_WARNING("Test operated with one team.  Parallelism of teams distribute can't be guarunteed.");
+  }
+  if (is_host){
+      OMPVV_WARNING("Test operated on host.  Target region was ignored.")
   }
 
   OMPVV_REPORT_AND_RETURN(errors);
