@@ -175,16 +175,17 @@ int test_defaultmap_off() {
     OMPVV_INFOMSG("test_defaultmap_off");
 
     int errors = 0;
-    int devtest = 1;
+    int* devtest = (int *)malloc(sizeof(int));
 
     // Checking for sharedmemory environment
-    #pragma omp target enter data map(to: devtest)
-    #pragma omp target map(alloc: devtest)
+    devtest[0] = 1
+    #pragma omp target enter data map(to: devtest[0:1])
+    #pragma omp target map(alloc: devtest[0:1])
     {
-        devtest = 0;
+        devtest[0] = 0;
     }
 
-    OMPVV_WARNING_IF(devtest == 0, "Shared memory environment. Scalars are not copied over but modified. This part of the tests is inconclusive")
+    OMPVV_WARNING_IF(devtest[0] == 0, "Shared memory environment. Scalars are not copied over but modified. This part of the tests is inconclusive")
 
 
     // we try with all the scalars
@@ -213,9 +214,6 @@ int test_defaultmap_off() {
     enum enum_type enum_array_a[ARRAY_SIZE];
     enum enum_type enum_array_b[ARRAY_SIZE];
 
-    // To check if execution happened in the host
-    int isHost[ARRAY_SIZE];
-
     for (int x = 0; x < ARRAY_SIZE; ++x){
         char_array_a[x] = x%10;
         char_array_b[x] = 0;
@@ -229,9 +227,6 @@ int test_defaultmap_off() {
         double_array_b[x] = 0;
         enum_array_a[x] = x%4 + 1;
         enum_array_b[x] = VAL1;
-
-        // To check if execution happened in the host
-        isHost[x] = 0;
     }
 
 
@@ -342,7 +337,7 @@ int test_defaultmap_off() {
 
     // Testing the fact that values should not be modified
     // at the host (unless shared memory or running on the host)
-    #pragma omp target teams distribute map(from: isHost[0:ARRAY_SIZE])
+    #pragma omp target teams distribute
     for (int x = 0; x < ARRAY_SIZE; ++x){
         scalar_char = 0;
         scalar_short = 0;
@@ -350,8 +345,6 @@ int test_defaultmap_off() {
         scalar_float = 0;
         scalar_double = 0;
         scalar_enum = 0;
-
-        isHost[x] = omp_is_initial_device();
     }
 
     for (int x = 0; x < ARRAY_SIZE; ++x){
@@ -397,7 +390,7 @@ int test_defaultmap_off() {
     }
 
     // If not shared memory, test if the scalars were not modified
-    if (devtest == 1 && !isHost[0]) {
+    if (devtest[0] == 1) {
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_char != scalar_char_copy);
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_short != scalar_short_copy);
         OMPVV_TEST_AND_SET_VERBOSE(errors, scalar_int != scalar_int_copy);
