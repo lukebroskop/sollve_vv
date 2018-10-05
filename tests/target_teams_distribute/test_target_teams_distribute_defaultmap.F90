@@ -1,4 +1,4 @@
-!===--- test_target_teams_distribute_defaultmap.c---------------------------===//
+!===--- test_target_teams_distribute_defaultmap.F90-------------------------===//
 !
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -24,9 +24,10 @@
         USE ompvv_lib
         USE omp_lib
         implicit none
-        INTEGER :: errors
+        LOGICAL :: isOffloading, isSharedEnv
         errors = 0
-
+        OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
+        OMPVV_TEST_AND_SET_SHARED_EVIRONMENT(isSharedEnv)
         OMPVV_TEST_VERBOSE(test_defaultmap_on() .ne. 0)
         OMPVV_TEST_VERBOSE(test_defaultmap_off() .ne. 0)
 
@@ -210,7 +211,6 @@
 
         INTEGER FUNCTION test_defaultmap_off()
           INTEGER :: errors, x, y
-          LOGICAL,DIMENSION(N) :: isHost
           CHARACTER :: scalar_char, scalar_char_copy
           BYTE :: scalar_byte, scalar_byte_copy
           INTEGER(kind = 2) :: scalar_short, scalar_short_copy
@@ -282,7 +282,7 @@
           !$omp & float_array_b(1:N), double_array_a(1:N), &
           !$omp & double_array_b(1:N), logical_array_a(1:N, 1:16), &
           !$omp & logical_array_b(1:N), logical_kind4_array_a(1:N, 1:16), &
-          !$omp & logical_kind4_array_b(1:N), logical_kind8_array_a(1:N, 1:16), &
+          !$omp & logical_kind4_array_b(1:N), logical_kind8_array_a(1:N, 1:16),&
           !$omp & logical_kind8_array_b(1:N), complex_array_a(1:N), &
           !$omp & complex_array_b(1:N), double_complex_array_a(1:N), &
           !$omp & double_complex_array_b(1:N)) defaultmap(tofrom: scalar)
@@ -456,7 +456,7 @@
             double_complex_array_a(x) = scalar_double_complex
           END DO
 
-          !$omp target teams distribute map(from: isHost(1:N))
+          !$omp target teams distribute
           DO x = 1, N
             scalar_char = 'z'
             scalar_byte = 0
@@ -470,7 +470,6 @@
             scalar_logical_kind8 = .FALSE.
             scalar_complex = (0, 0)
             scalar_double_complex = (0, 0)
-            isHost(x) = omp_is_initial_device()
           END DO
 
           DO x = 1, N
@@ -513,7 +512,7 @@
             END IF
           END DO
 
-          IF (isHost(1) .neqv. .TRUE.) THEN
+          IF (isSharedEnv .neqv. .TRUE.) THEN
             IF (scalar_char .ne. scalar_char_copy) THEN
               errors = errors + 1
             END IF
