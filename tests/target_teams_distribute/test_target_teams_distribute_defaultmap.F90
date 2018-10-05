@@ -25,9 +25,12 @@
         USE omp_lib
         implicit none
         LOGICAL :: isOffloading, isSharedEnv
-        errors = 0
         OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
-        OMPVV_TEST_AND_SET_SHARED_EVIRONMENT(isSharedEnv)
+        OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
+        IF (isSharedEnv) THEN
+          OMPVV_WARNING("Shared memory environment. Scalars are not copied")
+          OMPVV_WARNING("but modified. Defaultmap off test is inconclusive")
+        END IF
         OMPVV_TEST_VERBOSE(test_defaultmap_on() .ne. 0)
         OMPVV_TEST_VERBOSE(test_defaultmap_off() .ne. 0)
 
