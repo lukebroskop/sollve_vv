@@ -178,7 +178,7 @@ int test_defaultmap_off() {
     int* devtest = (int *)malloc(sizeof(int));
 
     // Checking for sharedmemory environment
-    devtest[0] = 1
+    devtest[0] = 1;
     #pragma omp target enter data map(to: devtest[0:1])
     #pragma omp target map(alloc: devtest[0:1])
     {
