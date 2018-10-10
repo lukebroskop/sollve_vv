@@ -1,4 +1,4 @@
-!===--- test_target_teams_distribute_map.c----------------------------------===//
+!===--- test_target_teams_distribute_map.F90--------------------------------===//
 !
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -113,12 +113,10 @@
             b(x) = x
           END DO
 
-          !$omp target enter data map(to: a(1:N))
           !$omp target teams distribute map(tofrom: a(1:N), b(1:N))
           DO x = 1, N
             b(x) = b(x) + a(x)
           END DO
-          !$omp target exit data map(delete: a(1:N))
 
           DO x = 1, N
             IF (b(x) .ne. a(x) * 2) THEN
