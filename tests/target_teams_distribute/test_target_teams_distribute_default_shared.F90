@@ -1,4 +1,4 @@
-!===--- test_target_teams_distribute_default_shared.c-----------------------===//
+!===--- test_target_teams_distribute_default_shared.F90---------------------===//
 !
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -25,6 +25,7 @@
         USE omp_lib
         implicit none
         INTEGER :: errors
+        OMPVV_TEST_OFFLOADING()
         errors = 0
 
         OMPVV_TEST_VERBOSE(default_shared1() .ne. 0)

@@ -18,6 +18,7 @@
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
+  OMPVV_WARNING("Test only uses default(none) clause and does not guarantee that the default(none) is enforced.");
   int a[1024];
   int b[1024];
   int c[1024];

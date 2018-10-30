@@ -19,6 +19,7 @@
         USE omp_lib
         implicit none
         INTEGER :: errors
+        OMPVV_TEST_OFFLOADING()
         errors = 0
 
         OMPVV_TEST_VERBOSE(test_to() .ne. 0)

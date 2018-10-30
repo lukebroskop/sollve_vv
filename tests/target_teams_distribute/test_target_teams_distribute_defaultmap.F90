@@ -24,8 +24,8 @@
         USE ompvv_lib
         USE omp_lib
         implicit none
-        LOGICAL :: isOffloading, isSharedEnv
-        OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
+        LOGICAL :: isSharedEnv
+        OMPVV_TEST_OFFLOADING()
         OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
         IF (isSharedEnv) THEN
           OMPVV_WARNING("Shared memory environment. Scalars are not copied")

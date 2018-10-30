@@ -40,7 +40,7 @@ int main() {
   if (default_threads == 1){
       OMPVV_WARNING("Test operated with one thread.  Testing of thread_limit clause cannot be done.");
   }
-  else if(default_threads == 0){
+  else if(default_threads <= 0){
       OMPVV_ERROR("Test returned thread_limit == 0.  Maybe omp_get_thread_limit() is not returning correct number of teams.");
       errors = 1;
   }

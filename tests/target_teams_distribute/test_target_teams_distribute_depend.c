@@ -43,7 +43,7 @@ int test_target_teams_distribute_depend_in_in(){
         }
         #pragma omp target teams distribute nowait depend(in:c) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
-            c[x] += 2 * a[x] + b[x];
+            c[x] += 2 * (a[x] + b[x]);
         }
     }
 
@@ -365,7 +365,7 @@ int test_target_teams_distribute_depend_disjoint_section(){
         }
         #pragma omp target teams distribute nowait depend(in:c[512:512]) map(alloc: a[0:1024], b[0:1024], c[0:1024])
         for (int x = 0; x < 1024; ++x){
-            c[x] += 2 * a[x] + b[x];
+            c[x] += 2 * (a[x] + b[x]);
         }
     }
 
@@ -379,7 +379,7 @@ int test_target_teams_distribute_depend_disjoint_section(){
     }
 
     if (!(all_valid == 1 && race_found == 1)){
-        OMPVV_WARNING("Test could not prove asyncronous operations of depend(in) task with other depend(in) task with offloading %s", (isOffloading ? "enabled" : "disabled"));
+        OMPVV_WARNING("Test could not prove asyncronous operations of tasks dependent on disjoint array sections");
     }
     return 0;
 }

@@ -26,7 +26,6 @@ int main() {
   int c[1024];
   int d[1024];
   int privatized;
-  int ishost;
   int errors = 0;
 
   for (int x = 0; x < 1024; ++x) {

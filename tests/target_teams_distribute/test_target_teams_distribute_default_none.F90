@@ -1,4 +1,4 @@
-!===--- test_target_teams_distribute_default_none.c-------------------------===//
+!===--- test_target_teams_distribute_default_none.F90-----------------------===//
 !
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -18,7 +18,10 @@
         USE ompvv_lib
         USE omp_lib
         implicit none
+        OMPVV_TEST_OFFLOADING()
 
+        OMPVV_WARNING("Test only uses default(none) clause and does not")
+        OMPVV_WARNING("guarantee that the default(none) is enforced.")
         OMPVV_TEST_VERBOSE(errors, default_none1() .ne. 0)
         OMPVV_TEST_VERBOSE(errors, default_none2() .ne. 0)
         OMPVV_REPORT_AND_RETURN()
@@ -37,7 +40,8 @@
             END DO
 
             !$omp target data map(from: d(1:N)) map(to: a(1:N), b(1:N), c(1:N))
-              !$omp target teams distribute default(none) shared(a, b, c, d) private(x, privatized)
+              !$omp target teams distribute default(none) shared(a, b, c, d) &
+              !$omp& private(x, privatized)
               DO x = 1, N
                 privatized = 0
                 DO y = 1, a(x) + b(x)
@@ -64,7 +68,8 @@
             END DO
 
             !$omp target data map(to: a(1:N)) map(tofrom: share)
-              !$omp target teams distribute default(none) private(x) shared(share, a)
+              !$omp target teams distribute default(none) private(x) &
+              !$omp& shared(share, a)
               DO x = 1, N
                 !$omp atomic
                 share = share + a(x)

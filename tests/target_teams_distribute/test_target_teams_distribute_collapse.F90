@@ -1,4 +1,4 @@
-!===--- test_target_teams_distribute.c--------------------------------------===//
+!===--- test_target_teams_distribute.F90------------------------------------===//
 !
 ! OpenMP API Version 4.5 Nov 2015
 !
@@ -18,6 +18,7 @@
         USE omp_lib
         implicit none
         INTEGER :: errors
+        OMPVV_TEST_OFFLOADING()
         errors = 0
 
         OMPVV_TEST_VERBOSE(test_collapse1() .ne. 0)
@@ -39,11 +40,14 @@
               END DO
             END DO
 
-            !$omp target teams distribute map(to: a(1:N, 1:N)) map(tofrom: b(1:N, 1:N+1)) map(from: num_teams) collapse(1)
+            !Collapse is only for one loop.  Second loop should be sequential
+
+            !$omp target teams distribute map(to: a(1:N, 1:N)) map(tofrom: &
+            !$omp& b(1:N, 1:N+1)) map(from: num_teams) collapse(1)
             DO x = 1, N
-              num_teams = omp_get_num_teams()
               DO y = 1, N
                 b(x, y + 1) = b(x, y) + a(x, y)
+                num_teams = omp_get_num_teams()
               END DO
             END DO
             !$omp end target teams distribute
@@ -52,14 +56,15 @@
               temp_total = 0
               DO y = 1, N + 1
                 OMPVV_TEST_AND_SET(errors, temp_total-b(x, y) .ne. 0)
-                IF (y .ne. N) THEN
+                IF (y .ne. N + 1) THEN
                   temp_total = temp_total + a(x, y)
                 END IF
               END DO
             END DO
 
             IF (num_teams .eq. 1) THEN
-              OMPVV_WARNING("Test operated with one team.  Parallelism of teams distribute can't be guarunteed.")
+              OMPVV_WARNING("Test operated with one team. Parallelism of teams")
+              OMPVV_WARNING("distribute can't be guarunteed.")
             END IF
             test_collapse1 = errors
           END FUNCTION test_collapse1
@@ -79,7 +84,8 @@
               END DO
             END DO
 
-            !$omp target teams distribute map(to: a(1:N, 1:N, 1:N)) map(from: b(1:N, 1:N, 1:N+1)) collapse(2)
+            !$omp target teams distribute map(to: a(1:N, 1:N, 1:N)) &
+            !$omp& map(from: b(1:N, 1:N, 1:N+1)) collapse(2)
             DO x = 1, N
               DO y = 1, N
                 DO z = 1, N
@@ -93,7 +99,7 @@
                 temp_total = 0
                 DO z = 1, N
                   OMPVV_TEST_AND_SET(errors, (temp_total - b(x, y, z)) .ne. 0)
-                  IF (z .ne. N) THEN
+                  IF (z .ne. N + 1) THEN
                     temp_total = temp_total + a(x, y, z)
                   END IF
                 END DO

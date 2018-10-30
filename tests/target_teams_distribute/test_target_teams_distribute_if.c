@@ -56,7 +56,6 @@ int main() {
       for (int x = 0; x < 1024; ++x){
           OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] != 1));
           if (a[x] != 1){
-              printf("%d at %d\n", a[x], x);
               break;
           }
       }
@@ -72,7 +71,6 @@ int main() {
       for (int x = 0; x < 1024; ++x){
           OMPVV_TEST_AND_SET_VERBOSE(errors, (a[x] != 1 + b[x]));
           if (a[x] != 1 + b[x]){
-              printf("%d at %d\n", a[x], x);
               break;
           }
       }
@@ -88,7 +86,6 @@ int main() {
       for (int x = 0; x < 1024; ++x){
           OMPVV_TEST_AND_SET_VERBOSE(errors, a[x] != 2 + 2 * b[x]);
           if (a[x] != 2 + 2 * b[x]){
-              printf("%d at %d\n", a[x], x);
               break;
           }
       }

@@ -42,7 +42,7 @@ int test_collapse1(){
         temp_total = 0;
         for (int y = 0; y < ARRAY_SIZE+1; ++y){
             OMPVV_TEST_AND_SET(errors, ((temp_total - b[x][y]) != 0));
-            if (y != ARRAY_SIZE){
+            if (y != ARRAY_SIZE + 1){
                 temp_total = temp_total + a[x][y];
             }
         }
@@ -83,7 +83,7 @@ int test_collapse2(){
             temp_total = 0;
             for (int z = 0; z < ARRAY_SIZE + 1; ++z){
                 OMPVV_TEST_AND_SET(errors, ((temp_total - b[x][y][z]) != 0));
-                if (z != ARRAY_SIZE){
+                if (z != ARRAY_SIZE + 1){
                     temp_total = temp_total + a[x][y][z];
                 }
             }

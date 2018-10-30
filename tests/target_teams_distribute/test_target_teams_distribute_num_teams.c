@@ -40,17 +40,18 @@ int main() {
 
   #pragma omp target data map(tofrom: default_num_teams)
   {
-      #pragma omp target teams distribute map(tofrom: default_num_teams)
+      #pragma omp target teams distribute map(tofrom: default_num_teams, c[0:1024]) map(to: a[0:1024], b[0:1024])
       for (int x = 0; x < 1024; ++x){
           default_num_teams = omp_get_num_teams();
+          c[x] = a[x] + b[x];
       }
   }
 
   if (default_num_teams == 1){
       OMPVV_WARNING("Test operated with one team.  Testing num_teams clause cannot be done.");
   }
-  else if(default_num_teams == 0){
-      OMPVV_ERROR("Test returned num_teams == 0.  Maybe omp_get_num_teams() is not returning correct number of teams.");
+  else if(default_num_teams <= 0){
+      OMPVV_ERROR("Test returned num_teams <= 0.  Maybe omp_get_num_teams() is not returning correct number of teams.");
       errors = 1;
   }
   else{
@@ -59,6 +60,7 @@ int main() {
           #pragma omp target teams distribute num_teams(default_num_teams - 1) map(alloc: num_teams)
           for (int x = 0; x < 1024; ++x){
               num_teams = omp_get_num_teams();
+              c[x] = a[x] + b[x];
           }
       }
       if (num_teams > default_num_teams - 1){
