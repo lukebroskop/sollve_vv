@@ -84,6 +84,14 @@ class testResult:
     self.endingRuntimeDate = newEndingRuntimeDate
     self.testComments = newComments if newComments else ""
   
+  def hasCompilationInfo(self):
+    ''' Check if there is already some compilation information '''
+    return self.compilerPass is not ""
+
+  def compilationSucceded(self):
+    ''' Check if the compilation passed '''
+    return self.compilerPass == "PASS"
+
   def makePathRelative(self, basePath=None):
     if (basePath):
       self.testPath = os.path.relpath(self.testPath, basePath)
@@ -183,12 +191,20 @@ def parseFile(log_file):
             # We are ending a section
             if current_state == "COMPILE":
               current_test.setCompilerResult(header_info["result"], current_buffer, header_info["date"], header_info["comments"])
+              # If compilation fails then we may not have (and should not have) a runtime
+              if (not current_test.compilationSucceded()):
+                current_test.setRuntimeResult(header_info["result"], current_buffer, header_info["date"], header_info["comments"])
+                returned_value.append(current_test)
+                # Runtime is the last thing that should happen
+                current_test = testResult()
             elif current_state == "RUN":
               current_test.setRuntimeResult(header_info["result"], current_buffer, header_info["date"], header_info["comments"])
-              returned_value.append(current_test)
-              # Runtime is the last thing that should happen
-              current_test = testResult()
-              current_state = header_info["type"]
+              # If only runtime information, compilation did not run. Or if the compilation info
+              # is there and it passed, otherwise, the tests is already in the list
+              if (not current_test.hasCompilationInfo() or current_test.compilationSucceded()):
+                returned_value.append(current_test)
+                # Runtime is the last thing that should happen
+                current_test = testResult()
 
             # reset the values
             current_state = header_info["type"]
