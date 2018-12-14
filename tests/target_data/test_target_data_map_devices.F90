@@ -22,7 +22,6 @@
         OMPVV_TEST_AND_SET_OFFLOADING(isOffloading)
         OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv)
 
-<<<<<<< Updated upstream
         ! Reporting the number of devices
         num_dev = omp_get_num_devices()
         WRITE(msgHelper, '(A,I0)') "number of devices = ", num_dev
@@ -34,19 +33,15 @@
         OMPVV_WARNING_IF(num_dev == 1, msgHelper)
 
         !starting the tests
-=======
         ! Warning for the number of devices
         
 
         OMPVV_TEST_VERBOSE(test_set_default_device() .NE. 0)
->>>>>>> Stashed changes
         OMPVV_TEST_VERBOSE(test_device_clause() .NE. 0)
 
         OMPVV_REPORT_AND_RETURN()
 
         CONTAINS 
-<<<<<<< Updated upstream
-=======
           ! Testing set default device API
           INTEGER FUNCTION test_set_default_device()
             INTEGER ::  errors, devData devComp
@@ -103,7 +98,6 @@
             test_set_default_device = errors_bf - errors_af
 
           END FUNCTION test_set_default_device
->>>>>>> Stashed changes
           ! Testing set device with deviceclause
           INTEGER FUNCTION test_device_clause()
           INTEGER :: dev_data, dev_comp
