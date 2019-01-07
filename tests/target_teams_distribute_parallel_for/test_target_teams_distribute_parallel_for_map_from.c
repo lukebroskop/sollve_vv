@@ -27,7 +27,7 @@ int test_target_teams_distribute_parallel_for_map_from() {
 
   // checking multiple times
   for (i = 0; i < ITERATIONS; ++i) {
-    scalar = 0
+    scalar = 0;
     // array initialization
     for (i = 0; i < SIZE_N; ++i) {
       a[i] = 1;
