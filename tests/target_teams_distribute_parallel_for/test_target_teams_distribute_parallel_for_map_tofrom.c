@@ -19,7 +19,8 @@ int test_target_teams_distribute_parallel_for_map_tofrom() {
   int b[SIZE_N];
   int c[SIZE_N];
   int d[SIZE_N];
-  int scalar = 50;
+  int scalar_to = 50; //to avoid datarace on the scalar due to read and write in the loop
+  int scalar_from = 50;
   int errors = 0;
   int i, j, dev;
 
@@ -27,7 +28,8 @@ int test_target_teams_distribute_parallel_for_map_tofrom() {
   // check multiple times
   for (i = 0; i < ITERATIONS; ++i) {
     // variables initialization
-    scalar = 50;
+    scalar_to = 50;
+    scalar_from = 50;
     for (i = 0; i < SIZE_N; i++) {
       a[i] = 1;
       b[i] = i;
@@ -36,17 +38,17 @@ int test_target_teams_distribute_parallel_for_map_tofrom() {
     }
 
     // Tests
-#pragma omp target teams distribute parallel for map(tofrom: a, b, c, d, scalar)
+#pragma omp target teams distribute parallel for map(tofrom: a, b, c, d, scalar_to, scalar_from)
     for (j = 0; j < SIZE_N; ++j) {
-      d[j] += c[j] * (a[j] + b[j] + scalar);
+      d[j] += c[j] * (a[j] + b[j] + scalar_to);
       a[j] = 10;
       b[j] = 11;
       c[j] = 12;
-      scalar = 13;
+      scalar_from = 13;
     }
 
     // Checking the results
-    OMPVV_TEST_AND_SET(errors, scalar != 13);
+    OMPVV_TEST_AND_SET(errors, scalar_from != 13);
     for (i = 0; i < SIZE_N; i++) {
       OMPVV_TEST_AND_SET(errors, a[i] != 10);
       OMPVV_TEST_AND_SET(errors, b[i] != 11);
@@ -63,7 +65,7 @@ int main() {
   OMPVV_TEST_OFFLOADING;
   int errors = 0;
 
-  OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_to());
+  OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_tofrom());
 
   OMPVV_REPORT_AND_RETURN(errors);
 }
