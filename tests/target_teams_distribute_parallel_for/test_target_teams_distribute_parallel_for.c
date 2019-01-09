@@ -16,31 +16,27 @@ int test_target_teams_distribute_parallel_for() {
   int num_teams = 0;
   int num_threads[ARRAY_SIZE];
   int alert_num_threads = 0;
-  int is_host;
-  int x;
+  int i;
 
   // a and b array initialization
-  for (x = 0; x < ARRAY_SIZE; ++x) {
-      a[x] = 1;
-      b[x] = x;
-      num_threads[x] = 0;
-  }
-
-  #pragma omp target data map(tofrom: a[0:ARRAY_SIZE], num_teams, is_host) map(to: b[0:ARRAY_SIZE])
-  {
-      #pragma omp target teams distribute
-      for (x = 0; x < ARRAY_SIZE; ++x){
-          is_host = omp_is_initial_device();
-          num_teams = omp_get_num_teams();
-          num_threads[x] = omp_get_num_threads();
-          a[x] += b[x];
-      }
+  for (i = 0; i < ARRAY_SIZE; ++i) {
+      a[i] = 1;
+      b[i] = i;
+      num_threads[i] = 0;
   }
 
 
-  for (x = 0; x < ARRAY_SIZE; ++x){
-      OMPVV_TEST_AND_SET(errors, (a[x] != 1 + b[x]));
-      if (num_threads[x] == 1) {
+#pragma omp target teams distribute parallel for map(from:num_teams)
+  for (i = 0; i < ARRAY_SIZE; ++i){
+      num_teams = omp_get_num_teams();
+      num_threads[i] = omp_get_num_threads();
+      a[i] += b[i];
+  }
+
+
+  for (i = 0; i < ARRAY_SIZE; ++i){
+      OMPVV_TEST_AND_SET(errors, (a[i] != 1 + b[i]));
+      if (num_threads[i] == 1) {
         alert_num_threads++;
       }
   }
@@ -50,7 +46,7 @@ int test_target_teams_distribute_parallel_for() {
       OMPVV_WARNING("Test operated with one team.  Parallelism of teams distribute can't be guarunteed.");
   }
   if (alert_num_threads == ARRAY_SIZE) {
-      OMPVV_WARNING("Test operated with one thread in all the teams. Parallelism of threads within a team can't be guaranteed");
+      OMPVV_WARNING("Test operated with one thread in all the teams. parallel clause had no effect");
   }
 
   return errors;
