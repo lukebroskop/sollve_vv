@@ -36,12 +36,12 @@ int test_target_teams_distribute_parallel_for_map_default() {
   for (i = 0; i < ITERATIONS; ++i) {
 #pragma omp target teams distribute parallel for
     for (j = 0; j < SIZE_N; ++j) {
-      d[j] = c[j] * (a[j] + b[j]);
+      d[j] += c[j] * (a[j] + b[j]);
     }
   }
 
   for (i = 0; i < SIZE_N; i++) {
-    OMPVV_TEST_AND_SET(errors, d[i] != (1 + i)*2*i);
+    OMPVV_TEST_AND_SET(errors, d[i] != ITERATIONS * (1 + i)*2*i);
   }
 
   return errors;
@@ -49,8 +49,12 @@ int test_target_teams_distribute_parallel_for_map_default() {
 
 // Test for OpenMP 4.5 target enter data with if
 int main() {
+  int isSharedEnv;
   OMPVV_TEST_OFFLOADING;
+  OMPVV_TEST_AND_SET_SHARED_ENV(isSharedEnv);
   int errors = 0;
+  
+  OMPVV_WARNING_IF(isSharedEnv, "This test is inconclusive on shared memory environments")
 
   OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_default());
 
