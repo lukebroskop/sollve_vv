@@ -51,7 +51,7 @@ int test_target_teams_distribute_parallel_for_map_default() {
 int main() {
   int isSharedEnv;
   OMPVV_TEST_OFFLOADING;
-  OMPVV_TEST_AND_SET_SHARED_ENV(isSharedEnv);
+  OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv);
   int errors = 0;
   
   OMPVV_WARNING_IF(isSharedEnv, "This test is inconclusive on shared memory environments")
