@@ -45,7 +45,11 @@ int test_target_teams_distribute_parallel_for_map_from() {
 
 // Test for OpenMP 4.5 target enter data with if
 int main() {
+  int isSharedEnv;
   OMPVV_TEST_OFFLOADING;
+  OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv);
+
+  OMPVV_WARNING_IF(isSharedEnv, "Testing map from is inconclusive under shared data environment")
   int errors = 0;
 
   OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_from());
