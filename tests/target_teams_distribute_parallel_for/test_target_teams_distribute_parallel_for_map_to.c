@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #define SIZE_N 2000
-#define INCREMENTS 10
 
 int test_target_teams_distribute_parallel_for_map_to() {
   OMPVV_INFOMSG("test_target_teams_distribute_parallel_for_map_to");
@@ -32,12 +31,10 @@ int test_target_teams_distribute_parallel_for_map_to() {
   }
 
   // check multiple sizes. 
-  for (i = 0; i < SIZE_N; i = i + 10) {
-#pragma omp target teams distribute parallel for map(to: a[i:INCREMENTS],b[i:INCREMENTS], scalar) map(tofrom: d)
-    for (j = i; j < i + INCREMENTS; ++j) {
+#pragma omp target teams distribute parallel for map(to: a, b, scalar) map(tofrom: d)
+    for (j = 0; j < SIZE_N; ++j) {
       d[j] = (a[j] + b[j]) * scalar;
     }
-  }
 
   for (i = 0; i < SIZE_N; i++) {
     OMPVV_TEST_AND_SET(errors, d[i] != (1 + i) * 50);

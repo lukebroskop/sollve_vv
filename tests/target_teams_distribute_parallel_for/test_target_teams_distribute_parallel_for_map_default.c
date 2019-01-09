@@ -11,8 +11,7 @@
 #include "ompvv.h"
 #include <stdio.h>
 
-#define SIZE_N 1024
-#define ITERATIONS 1000
+#define SIZE_N 2000
 
 int test_target_teams_distribute_parallel_for_map_default() {
   OMPVV_INFOMSG("test_target_teams_distribute_parallel_for_devices");
@@ -21,6 +20,7 @@ int test_target_teams_distribute_parallel_for_map_default() {
   int b[SIZE_N];
   int c[SIZE_N];
   int d[SIZE_N];
+  int scalar = 20;
   int errors = 0;
   int i, j, dev;
 
@@ -32,16 +32,18 @@ int test_target_teams_distribute_parallel_for_map_default() {
     d[i] = 0;
   }
 
-  // check multiple sizes. 
-  for (i = 0; i < ITERATIONS; ++i) {
+
 #pragma omp target teams distribute parallel for
-    for (j = 0; j < SIZE_N; ++j) {
-      d[j] += c[j] * (a[j] + b[j]);
-    }
+  for (j = 0; j < SIZE_N; ++j) {
+    // scalar is firstprivate for the target region, but 
+    // in a parallel construct, if not default clause is present
+    // the variable is shared. Hence scalar = any other value 
+    // could cause a data race
+    d[j] += c[j] * (a[j] + b[j] + scalar);
   }
 
   for (i = 0; i < SIZE_N; i++) {
-    OMPVV_TEST_AND_SET(errors, d[i] != ITERATIONS * (1 + i)*2*i);
+    OMPVV_TEST_AND_SET(errors, d[i] != ITERATIONS * (1 + i + 20) * 2*i);
   }
 
   return errors;

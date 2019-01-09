@@ -17,12 +17,9 @@ int test_target_teams_distribute_parallel_for_map_from() {
   OMPVV_INFOMSG("test_target_teams_distribute_parallel_for_map_from");
   
   int a[SIZE_N];
-  int b[SIZE_N];
-  int c[SIZE_N];
-  int d[SIZE_N];
   int scalar = 0;
   int errors = 0;
-  int i, dev;
+  int i,j, dev;
 
   scalar = 0;
   // array initialization
@@ -30,11 +27,11 @@ int test_target_teams_distribute_parallel_for_map_from() {
     a[i] = 1;
   }
 
-  // tests
+
 #pragma omp target teams distribute parallel for map(from: a, scalar)
-  for (i = 0; i < SIZE_N; ++i) {
+  for (j = 0; j < SIZE_N; ++j) {
     scalar = 20;
-    a[i] = 10;
+    a[j] = 10;
   }
 
   // check the results
