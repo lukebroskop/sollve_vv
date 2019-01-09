@@ -46,7 +46,7 @@ int test_target_teams_distribute_parallel_for() {
       OMPVV_WARNING("Test operated with one team.  Parallelism of teams distribute can't be guarunteed.");
   }
   if (alert_num_threads == ARRAY_SIZE) {
-      OMPVV_WARNING("Test operated with one thread in all the teams. parallel clause had no effect");
+      OMPVV_WARNING("Test operated with one thread in all the teams. Parallel clause had no effect");
   }
 
   return errors;
