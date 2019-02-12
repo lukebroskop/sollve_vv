@@ -1,9 +1,10 @@
-//===---- test_target_teams_distribute_parallel_for_private.c - combined consutrct -===//
+//===---- test_target_teams_distribute_parallel_for_firstprivate.c - combined consutrct -===//
 // 
 // OpenMP API Version 4.5 Nov 2015
 // 
 // This test check for a private variable within a pragma omp target teams distribute 
-// parallel for. We use a private variable within a for loop and asign it every iteration
+// parallel for that is initialized from the host through firstprivate clause
+// We use a private variable within a for loop and asign it every iteration
 // hoping that we won't get into data races. We do this multiple times to improve
 // test
 //
