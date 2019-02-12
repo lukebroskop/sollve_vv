@@ -12,39 +12,32 @@
 #include <stdio.h>
 
 #define SIZE_N 2000
-#define ITERATIONS 1000
 
 int test_target_teams_distribute_parallel_for_map_from() {
   OMPVV_INFOMSG("test_target_teams_distribute_parallel_for_map_from");
   
   int a[SIZE_N];
-  int b[SIZE_N];
-  int c[SIZE_N];
-  int d[SIZE_N];
   int scalar = 0;
   int errors = 0;
-  int i, j, dev;
+  int i,j, dev;
 
-  // checking multiple times
-  for (i = 0; i < ITERATIONS; ++i) {
-    scalar = 0;
-    // array initialization
-    for (i = 0; i < SIZE_N; ++i) {
-      a[i] = 1;
-    }
+  scalar = 0;
+  // array initialization
+  for (i = 0; i < SIZE_N; ++i) {
+    a[i] = 1;
+  }
 
-    // tests
+
 #pragma omp target teams distribute parallel for map(from: a, scalar)
-    for (j = 0; j < SIZE_N; ++j) {
-      scalar = 20;
-      a[j] = 10;
-    }
+  for (j = 0; j < SIZE_N; ++j) {
+    scalar = 20;
+    a[j] = 10;
+  }
 
-    // check the results
-    OMPVV_TEST_AND_SET(errors, scalar != 20);
-    for (i = 0; i < SIZE_N; ++i) {
-      OMPVV_TEST_AND_SET(errors, a[i] != 10);
-    }
+  // check the results
+  OMPVV_TEST_AND_SET(errors, scalar != 20);
+  for (i = 0; i < SIZE_N; ++i) {
+    OMPVV_TEST_AND_SET(errors, a[i] != 10);
   }
 
   return errors;
@@ -52,7 +45,11 @@ int test_target_teams_distribute_parallel_for_map_from() {
 
 // Test for OpenMP 4.5 target enter data with if
 int main() {
+  int isSharedEnv;
   OMPVV_TEST_OFFLOADING;
+  OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv);
+
+  OMPVV_WARNING_IF(isSharedEnv, "Testing map from is inconclusive under shared data environment")
   int errors = 0;
 
   OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_from());
