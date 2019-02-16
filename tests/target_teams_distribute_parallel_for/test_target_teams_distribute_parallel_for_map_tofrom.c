@@ -2,6 +2,11 @@
 // 
 // OpenMP API Version 4.5 Nov 2015
 // 
+// Testing the map clause with the tofrom map-modifier, for the combined construct
+// target teams distribute parallel for.
+// Scalar mapping has to be divided between to and from. Otherwise there will be 
+// data races between the threads that are writting the scalar and those that are reading
+// from it
 //
 //===-----------------------------------------------------------------------------------===//
 
@@ -55,7 +60,6 @@ int test_target_teams_distribute_parallel_for_map_tofrom() {
   return errors;
 }
 
-// Test for OpenMP 4.5 target enter data with if
 int main() {
   OMPVV_TEST_OFFLOADING;
   int errors = 0;
