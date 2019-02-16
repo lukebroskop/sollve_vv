@@ -1,3 +1,11 @@
+//===---- test_target_teams_distribute_parallel_for.c - combined consutrct -===//
+// 
+// OpenMP API Version 4.5 Nov 2015
+// 
+// testing the combined construct target teams distribute parallel for
+//
+//===----------------------------------------------------------------------------------===//
+//
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +21,7 @@ int test_target_teams_distribute_parallel_for() {
 
   int a[ARRAY_SIZE];
   int b[ARRAY_SIZE];
+  int c[ARRAY_SIZE];
   int num_teams = 0;
   int num_threads[ARRAY_SIZE];
   int alert_num_threads = 0;
@@ -22,20 +31,21 @@ int test_target_teams_distribute_parallel_for() {
   for (i = 0; i < ARRAY_SIZE; ++i) {
       a[i] = 1;
       b[i] = i;
+      c[i] = 2 * i;
       num_threads[i] = 0;
   }
 
 
-#pragma omp target teams distribute parallel for map(from:num_teams)
+#pragma omp target teams distribute parallel for map(from:num_teams, num_threads)
   for (i = 0; i < ARRAY_SIZE; ++i){
       num_teams = omp_get_num_teams();
       num_threads[i] = omp_get_num_threads();
-      a[i] += b[i];
+      a[i] += b[i] * c[i];
   }
 
 
   for (i = 0; i < ARRAY_SIZE; ++i){
-      OMPVV_TEST_AND_SET(errors, (a[i] != 1 + b[i]));
+      OMPVV_TEST_AND_SET(errors, (a[i] != 1 + (b[i] * c[i])));
       if (num_threads[i] == 1) {
         alert_num_threads++;
       }
