@@ -41,7 +41,7 @@ int test_all_dependencies() {
     }
   }
 
-  // Testing denpend(inout... ) with device 
+  // Testing depend(inout... ) with device 
 #pragma omp target teams distribute parallel for \
   depend(inout: dep_1, dep_2) map(tofrom: dep_1[0:N], dep_2[0:N])
   for (int i = 0; i < N; i++) {
@@ -49,7 +49,7 @@ int test_all_dependencies() {
     dep_2[i] += 100;
   }
 
-  // Testing denpend(in... )
+  // Testing depend(in... )
 #pragma omp target teams distribute parallel for \
   depend(in: dep_1) map(tofrom: dep_1[0:N])
   for (int i = 0; i < N; i++) {
