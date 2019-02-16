@@ -21,6 +21,7 @@
 
 #include <omp.h>
 #include "ompvv.h"
+#include <cmath>
 
 #define N 1000
 
@@ -31,7 +32,11 @@ private:
   int size;
 
 public:
-  A(const int s) : size(s) {}
+  A(const int s) : size(s) {
+    for (int i = 0; i < N; i++) {
+      h_array[i] = 0;
+    }
+  }
 
   void modifyExplicit() {
     int * theArray = this->h_array;
@@ -41,7 +46,7 @@ public:
 #pragma omp target map(theArray[0:N]) map(theSize) 
     {
       for (int i = 0; i < theSize; ++i)
-          theArray[i] = 1;
+          theArray[i] += 1;
     } // end target
   }
 
@@ -49,7 +54,7 @@ public:
 #pragma omp target // implicit map(tofrom: this->h_array) map(firstprivate: this->size)
     {
       for (int i = 0; i < size; ++i)
-          h_array[i] = 1;
+          h_array[i] += 1;
     } // end target 
   }
 
@@ -122,7 +127,7 @@ int test_static () {
   OMPVV_INFOMSG("Testing accessing a static variable");
 
   int errors = 0;
-  double exp = 1.0, res = 0.0;
+  double res = 0.0;
   
 #pragma omp target map(tofrom: res)
   {
@@ -130,7 +135,7 @@ int test_static () {
   } // end target
 
   // checking results
-  OMPVV_TEST_AND_SET_VERBOSE(errors, res != exp)
+  OMPVV_TEST_AND_SET_VERBOSE(errors, std::abs(res - 1.0) > 0.0001)
 
   return errors;
 }
@@ -146,7 +151,7 @@ int test_static_method () {
     value = B::staticMethod();
   } // end target
 
-  OMPVV_TEST_AND_SET_VERBOSE(errors, value != 1.0);
+  OMPVV_TEST_AND_SET_VERBOSE(errors, std::abs(value - 1.0) > 0.0001);
 
   return errors;
 }
