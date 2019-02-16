@@ -12,14 +12,16 @@ private:
   int size;
 
 public:
-  A(const int s) : size(s) {}
+  A(const int s) : size(s) {
+    for (int i = 0; i < N; i++)
+      h_array[i] = 0;
+  }
 
-  void modify(int* isHost) {
-#pragma omp target map(tofrom:this->h_array) map(this->size) map(tofrom: isHost)     
+  void modify() {
+#pragma omp target      
     {
-      *isHost = omp_is_initial_device();
       for (int i = 0; i < size; ++i)
-          h_array[i] = 1;
+          h_array[i] += 1;
     }
   }
 
@@ -30,13 +32,11 @@ public:
 
 int main() {
 
-  cout << "test_explicit" << endl;
-
-  int sum = 0, isHost = 0, errors = 0;
+  int sum = 0, errors = 0;
 
   A *obj = new A(N);
 
-  obj->modify(&isHost);
+  obj->modify();
 
   // checking results
   int* h_array = obj->getArray();
@@ -44,10 +44,8 @@ int main() {
     sum += h_array[i];
 
   errors = N != sum;
-  if (!errors)
-    cout << "Test passed on " << (isHost ? "host" : "device") << ": sum=" << sum << ", N=" << N << endl;
-  else
-    cout << "Test failed on " << (isHost ? "host" : "device") << ": sum=" << sum << ", N=" << N << endl;
+  if (errors)
+    cout << "test failed with "<< errors << "errors";
 
   delete obj;
 
