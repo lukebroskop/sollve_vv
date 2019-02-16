@@ -1,9 +1,8 @@
-//===---- test_target_teams_distribute_parallel_for_map_default.c - combined consutrct -===//
+//===---- test_target_teams_distribute_parallel_for_map_to.c - combined consutrct -===//
 // 
 // OpenMP API Version 4.5 Nov 2015
 // 
-// testing the maping to of arrays and a non-variable. Making sure that it does not copy it 
-// over 
+// Testing the mapping of arrays and scalar through the map clause with the to map-modifier 
 //
 //===-----------------------------------------------------------------------------------===//
 
@@ -30,7 +29,6 @@ int test_target_teams_distribute_parallel_for_map_to() {
     d[i] = 0;
   }
 
-  // check multiple sizes. 
 #pragma omp target teams distribute parallel for map(to: a, b, scalar) map(tofrom: d)
     for (j = 0; j < SIZE_N; ++j) {
       d[j] = (a[j] + b[j]) * scalar;
@@ -43,14 +41,11 @@ int test_target_teams_distribute_parallel_for_map_to() {
   return errors;
 }
 
-// Test for OpenMP 4.5 target enter data with if
 int main() {
   int isSharedEnv;
   OMPVV_TEST_OFFLOADING;
   OMPVV_TEST_AND_SET_SHARED_ENVIRONMENT(isSharedEnv);
   int errors = 0;
-
-  OMPVV_WARNING_IF(isSharedEnv, "Shared memory environment makes this test inconclusive");
 
   OMPVV_TEST_AND_SET_VERBOSE(errors, test_target_teams_distribute_parallel_for_map_to());
 
