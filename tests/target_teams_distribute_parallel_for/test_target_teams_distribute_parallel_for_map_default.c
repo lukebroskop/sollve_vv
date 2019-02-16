@@ -48,7 +48,7 @@ int test_target_teams_distribute_parallel_for_map_default(int isShared) {
   if (!isShared)
     OMPVV_TEST_AND_SET(errors, scalar2 != -1);
   for (i = 0; i < SIZE_N; i++) {
-    OMPVV_TEST_AND_SET(errors, d[i] != ITERATIONS * (1 + i + 20) * 2*i);
+    OMPVV_TEST_AND_SET(errors, d[i] != (1 + i + 20) * 2*i);
   }
 
   return errors;
