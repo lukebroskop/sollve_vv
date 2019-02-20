@@ -1,4 +1,4 @@
-//===---- test_target_data_if.c - check the if clause of target data ------===//
+//===---- test_target_teams_distribute_parallel_for_if_no_modifier.c --------===//
 // 
 // OpenMP API Version 4.5 Nov 2015
 // 
@@ -23,7 +23,7 @@
 #define NUM_ATTEMPTS 100
 #define SIZE_N 1024
 
-void checkPreconditions() {
+int checkPreconditions() {
   // We test if offloading is enable, and if 
   // the number of threads is not 1. Having 
   // the number of threads equal to 1 is legal, but 
@@ -34,7 +34,7 @@ void checkPreconditions() {
   int isOffloading = 0;
   int i;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
-  OMPVV_WARNING_IF(!isOffloading, "With offloading off, it is not possible to test if");
+  OMPVV_WARNING_IF(!isOffloading, "With offloading off, it is not possible to test if on the parallel and not the target");
 
   // Testing for number of threads
   int init_num_threads_dev[SIZE_N], init_num_threads_host[SIZE_N];
@@ -57,26 +57,27 @@ void checkPreconditions() {
     init_num_threads_host[i] = omp_get_num_threads();
   }
   
-  // We check that none of the values is 1 or less. This would make the test of if target
-  // not possible
+  // We check that not all the values are 1. This would make the test of if target
+  // not possible. 
   int raiseWarningDevice = 0, raiseWarningHost = 0;
   for (i = 0; i < SIZE_N; i++) {
-    if (init_num_threads_dev[i] <= 1 ) {
-      raiseWarningDevice = 1;
+    if (init_num_threads_dev[i] > 1 ) {
+      raiseWarningDevice +=  1;
     }
-    if ( init_num_threads_host[i] <= 1) {
-      raiseWarningHost = 1;
+    if ( init_num_threads_host[i] > 1) {
+      raiseWarningHost += 1;
     }
   }
-  OMPVV_WARNING_IF(raiseWarningDevice, "Initial number of threads in device was 1. It is not possible to test the if for parallel");
-  OMPVV_WARNING_IF(raiseWarningHost, "Initial number of threads in host was 1. It is not possible to test the if for parallel");
+  OMPVV_WARNING_IF(raiseWarningDevice == 0, "Initial number of threads in device was 1. It is not possible to test the if for parallel");
+  OMPVV_WARNING_IF(raiseWarningHost == 0, "Initial number of threads in host was 1. It is not possible to test the if for parallel");
 
+  return isOffloading;
 }
 
 int test_target_teams_distribute_if_no_modifier() {
   OMPVV_INFOMSG("test_target_teams_distribute_if_no_modifier");
- 
-  checkPreconditions();
+
+  int isOffloading =  checkPreconditions();
 
   int a[SIZE_N];
   int warning[SIZE_N] ; // num_threads = 1 is not technically an error
@@ -101,7 +102,8 @@ int test_target_teams_distribute_if_no_modifier() {
         // if(false): We should execute in the host 
         // and the number of threads is expected 
         // to be 1
-        a[i] += (omp_get_num_threads() > 1) ? 10 : 0; // This +10 should not happen
+        a[i] += (omp_get_num_threads() > 1) ? 10 : 0; // This +10 should not happena
+        a[i] += (attempt >= ATTEMPT_THRESHOLD) ? 10 : 0; // This +10 should not happena
       } else {
         a[i] += 1;
         warning[i] += (omp_get_num_threads() == 1 ? 1 : 0); // We cannot say that this is an error but we can raise a warning
