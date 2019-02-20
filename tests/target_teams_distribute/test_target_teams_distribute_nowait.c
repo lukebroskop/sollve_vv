@@ -14,54 +14,55 @@
 #include <stdlib.h>
 #include "ompvv.h"
 
-#define SIZE_THRESHOLD 512
+#define ARRAY_SIZE 1024
 #define ITERATIONS 1024
 int main() {
   int isOffloading = 0;
   OMPVV_TEST_AND_SET_OFFLOADING(isOffloading);
-  int a[1024];
-  int b[1024];
-  int c[1024];
-  int d[1024];
-  int e[1024];
-  int f[1024];
+  int a[ARRAY_SIZE];
+  int b[ARRAY_SIZE];
+  int c[ARRAY_SIZE];
+  int d[ARRAY_SIZE];
+  int e[ARRAY_SIZE];
+  int f[ARRAY_SIZE];
   int errors = 0;
-  int is_host;
   int race_condition_found = 0;
 
   for (int y = 0; y < ITERATIONS; ++y){
-      for (int x = 0; x < 1024; ++x) {
+      for (int x = 0; x < ARRAY_SIZE; ++x) {
           a[x] = x + y;
           b[x] = 2 * x + y;
           c[x] = 0;
           d[x] = 3 * x + y;
           e[x] = 4 * x + y;
           f[x] = 0;
-          g[x] = 0;
       }
 
-      #pragma omp target data map(to: a[0:1024], b[0:1024], d[0:1024], e[0:1024]) map(from: c[0:1024], f[0:1024]) map(tofrom: is_host)
+      #pragma omp target data map(to: a[0:ARRAY_SIZE], b[0:ARRAY_SIZE], d[0:ARRAY_SIZE], e[0:ARRAY_SIZE]) map(from: c[0:ARRAY_SIZE], f[0:ARRAY_SIZE]) 
       {
-          #pragma omp target teams distribute nowait map(alloc: a[0:1024], b[0:1024], c[0:1024])
-          for (int x = 0; x < 1024; ++x){
+          #pragma omp target teams distribute nowait map(alloc: a[0:ARRAY_SIZE], b[0:ARRAY_SIZE], c[0:ARRAY_SIZE])
+          for (int x = 0; x < ARRAY_SIZE; ++x){
               c[x] = a[x] + b[x];
           }
-          #pragma omp target teams distribute nowait map(alloc: is_host, c[0:1024], d[0:1024], e[0:1024], f[0:1024])
-          for (int x = 0; x < 1024; ++x){
-              is_host = omp_is_initial_device();
+          #pragma omp target teams distribute nowait map(alloc: c[0:ARRAY_SIZE], d[0:ARRAY_SIZE], e[0:ARRAY_SIZE], f[0:ARRAY_SIZE])
+          for (int x = 0; x < ARRAY_SIZE; ++x){
               f[x] = c[x] + d[x] + e[x];
           }
+#pragma omp target
+           {
+            race_condition_found = 0;
+           }
       }
 
-      for (int x = 0; x < 1024; ++x){
+      for (int x = 0; x < ARRAY_SIZE; ++x){
           OMPVV_TEST_AND_SET_VERBOSE(errors, c[x] != 3 * x + 2 * y);
           if (f[x] != 10 * x + 4 * y){
-              race_condition_found = 1
+              race_condition_found = 1;
           }
       }
   }
 
-  OMPVV_WARNING_IF(race_conidition_found == 0, "Could not show that nowait was operating on target teams distribute construct");
+  OMPVV_WARNING_IF(race_condition_found == 0, "Could not show that nowait was operating on target teams distribute construct");
 
   OMPVV_REPORT_AND_RETURN(errors);
 }
