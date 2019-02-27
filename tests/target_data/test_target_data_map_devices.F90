@@ -44,9 +44,9 @@
         CONTAINS 
           ! Testing set default device API
           INTEGER FUNCTION test_set_default_device()
-            INTEGER ::  errors, devData devComp
+            INTEGER :: errors, devData, devComp, def_dev
             INTEGER :: errors_bf, errors_af
-            INTEGER dimensions(N) :: anArray
+            INTEGER, dimension(N) :: anArray
 
             OMPVV_INFOMSG("using set_default_device")
 
@@ -63,7 +63,7 @@
             ! Iterate over all the devices
             DO devData = 0, num_dev - 1
               ! set default device
-              omp_set_defalt_device(devData)
+              call omp_set_default_device(devData)
               !$omp target data map(tofrom: anArray(1:N))
 
                 ! Iterate over all the devices doing comp
@@ -73,19 +73,18 @@
                   !$omp target map(alloc: anArray(1:N)) &
                   !$omp device(devComp)
 
-                    ! Increase only in the current tested device
                     IF (devComp == devData) THEN
                       anArray(1:N) = anArray(1:N) + 1
-                    ELSE IF (.NOT. isSharedEnv)
+                    ELSE IF (.NOT. isSharedEnv) THEN
                       ! This should not affect result as it should happen in
                       ! other devices
                       anArray(1:N) = anArray(1:N) - 10
                     END IF
                     
                   !$omp end target
-                END DO devComp
-              !$end omp target data
-            END DO devData
+                END DO !devComp
+              !$omp end target data
+            END DO !devData
               
             OMPVV_GET_ERRORS(errors_bf)
             OMPVV_TEST_VERBOSE(ANY(anArray /= num_dev + 1))
@@ -93,7 +92,7 @@
 
             ! return the default device to the 
             ! original default 
-            omp_set_defalt_device(def_dev)
+            call omp_set_default_device(def_dev)
 
             test_set_default_device = errors_bf - errors_af
 
